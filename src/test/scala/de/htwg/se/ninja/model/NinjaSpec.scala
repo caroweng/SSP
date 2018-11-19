@@ -8,7 +8,7 @@ class NinjaSpec extends WordSpec with Matchers{
       val ninja = Ninja.apply(Team.T2, Weapons.scissors)
       ninja.team should be(Team.T2)
       ninja.weapon should be(Weapons.scissors)
+      print("es geht")
     }
-
   }
 }

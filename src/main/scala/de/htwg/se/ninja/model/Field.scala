@@ -2,12 +2,12 @@ package de.htwg.se.ninja.model
 
 import Weapons.Weapons
 
-case class Field(matrix: Array[Array[Cell]], row: Int, col: Int) {
-  def this(r: Int, c: Int) = this (Array.ofDim[Cell](r, c))
+case class Field(/*matrixm: Array[Array[Cell]],*/ row: Int, col: Int) {
+  //def this(r: Int, c: Int) = this(Array.ofDim[Cell](r, c))
 
-  newGame()
+  /*newGame()
 
-  def newGame(): Field = {
+  def newGame(): Field = {*/
     var matrix = Array.ofDim[Cell](row,col)
     if (row <= 2 && col <= 1  ) {
       throw new IllegalArgumentException("Ungültige Arraygröße")
@@ -33,22 +33,26 @@ case class Field(matrix: Array[Array[Cell]], row: Int, col: Int) {
           matrix(k)(l) = Cell(Some(Ninja(Team.T2, randWeapon())))
         }
       }
-    }
+    /*}*/
 
-    Field(matrix, row, col)
+    //Field(matrix, row, col)
   }
-
 
   def randWeapon(): Weapons = {
     val r = scala.util.Random
-    r.nextInt(3)
-    if(r == 0) {
-      return Weapons.scissors
-    } else if(r == 1){
-      return Weapons.stone
+    val n: Int = r.nextInt(3)
+    if(n == 0) {
+      Weapons.scissors
+    } else if(n == 1){
+      Weapons.stone
     } else {
-      return Weapons.paper
+      Weapons.paper
     }
   }
+
+ /* def box(row: Int, col: Int) = Unit {
+     this.matrix(row)(col)
+  }*/
+
 }
 
