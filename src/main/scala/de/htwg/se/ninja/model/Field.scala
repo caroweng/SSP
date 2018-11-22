@@ -2,13 +2,11 @@ package de.htwg.se.ninja.model
 
 import Weapons.Weapons
 
-case class Field(/*matrixm: Array[Array[Cell]],*/ row: Int, col: Int) {
-  //def this(r: Int, c: Int) = this(Array.ofDim[Cell](r, c))
+case class Field( row: Int, col: Int) {
 
-  /*newGame()
-
-  def newGame(): Field = {*/
     var matrix = Array.ofDim[Cell](row,col)
+
+
     if (row <= 2 && col <= 1  ) {
       throw new IllegalArgumentException("Ungültige Arraygröße")
     }
@@ -33,9 +31,6 @@ case class Field(/*matrixm: Array[Array[Cell]],*/ row: Int, col: Int) {
           matrix(k)(l) = Cell(Some(Ninja(Team.T2, randWeapon())))
         }
       }
-    /*}*/
-
-    //Field(matrix, row, col)
   }
 
   def randWeapon(): Weapons = {
@@ -49,10 +44,6 @@ case class Field(/*matrixm: Array[Array[Cell]],*/ row: Int, col: Int) {
       Weapons.paper
     }
   }
-
- /* def box(row: Int, col: Int) = Unit {
-     this.matrix(row)(col)
-  }*/
 
 }
 
