@@ -1,3 +1,4 @@
 package de.htwg.se.ninja.model
 
-case class Cell (ninja: Option[Ninja])
+case class Cell (n: Option[Ninja])
+

@@ -1,6 +1,7 @@
 package de.htwg.se.ninja.model
 import Direction.Direction
 import Weapons.Weapons
+import de.htwg.se.ninja.model
 
 
 class Play (field: Field){
@@ -26,8 +27,9 @@ class Play (field: Field){
 
     def move(nrow: Int, ncol: Int): Unit = {
       if (field.matrix(nrow)(ncol) != Cell(None)) {
-        if(fight(field.matrix(row)(col)(Some(Ninja)), field.matrix(nrow)(ncol)(Some(Ninja))) != null) {
-          field.matrix(nrow)(ncol) = field.matrix(row)(col)(Some(Ninja))
+        if(fight(field.matrix(row)(col)(Some(Ninja).get), field.matrix(nrow)(ncol)(Some(Ninja).get))!= None) {
+          val n: Ninja = field.matrix(nrow)(ncol)[Ninja]
+          field.matrix(nrow)(ncol) = field.matrix(row)(col)
           field.matrix(row)(col) = Cell(None)
         } else {
           field.matrix(nrow)(ncol) = Cell(None)
@@ -39,24 +41,15 @@ class Play (field: Field){
     }
   }
 
-
-
-  def fight(n1: Ninja, n2: Ninja): Ninja = {
+  def fight(n1: Ninja, n2: Ninja): Option[Ninja] = {
     if(n1.weapon == n2.weapon) {
       rematch(n1, n1)
     }
     if(weaponWeight(n1.weapon, n2.weapon)) {
-      n1
+      Some(n1)
     } else {
-      null
+      None
     }
-
-
-
-
-
-
-
   }
 
   def rematch(n1: Ninja, n2: Ninja): Unit = {
