@@ -7,6 +7,7 @@ case class Field( row: Int, col: Int) {
     var matrix = Array.ofDim[Cell](row,col)
 
 
+
     if (row <= 2 && col <= 1  ) {
       throw new IllegalArgumentException("Ungültige Arraygröße")
     }
