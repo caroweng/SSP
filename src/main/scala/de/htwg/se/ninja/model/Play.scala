@@ -1,13 +1,10 @@
 package de.htwg.se.ninja.model
 import Direction.Direction
 import Weapons.Weapons
-import de.htwg.se.ninja.model
 
+case class Play (field: Field){
 
-class Play (field: Field){
-
-
-  def walk(d: Direction, row: Int, col: Int): Unit = {
+  def walk(d: Direction, row: Int, col: Int): Field = {
 
     d match {
       case Direction.right =>
@@ -26,7 +23,7 @@ class Play (field: Field){
 
 
     def move(nrow: Int, ncol: Int): Unit = {
-      if (field.matrix(nrow)(ncol) != Cell(None)) {
+      /*if (field.matrix(nrow)(ncol) != Cell(None)) {
         if(fight(field.matrix(row)(col)(Some(Ninja).get), field.matrix(nrow)(ncol)(Some(Ninja).get))!= None) {
           val n: Ninja = field.matrix(nrow)(ncol)[Ninja]
           field.matrix(nrow)(ncol) = field.matrix(row)(col)
@@ -37,8 +34,9 @@ class Play (field: Field){
       } else {
         field.matrix(nrow)(ncol) = field.matrix(row)(col)
         field.matrix(row)(col) = Cell(None)
-      }
+      }*/
     }
+    field
   }
 
   def fight(n1: Ninja, n2: Ninja): Option[Ninja] = {
