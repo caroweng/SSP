@@ -2,7 +2,7 @@ package de.htwg.se.ninja.model
 import Direction.Direction
 import Weapons.Weapons
 
-case class Play (field:Field, row: Int, col: Int, d :Direction) {
+case class Play (field: Field, row: Int, col: Int, d :Direction) {
 
   field(row)(col) match {
     case None =>
@@ -27,9 +27,9 @@ case class Play (field:Field, row: Int, col: Int, d :Direction) {
         if (exists(row - 1, col))
           move(row - 1, col)
     }
-    field
+    copy(field)
   }
-    def move(nrow: Int, ncol: Int): Unit = {
+    def move(nrow: Int, ncol: Int): Field = {
       field(nrow)(ncol) match {
         case None => field(nrow)(ncol) = field(row)(col)
           field(row)(col) = Cell(None)
@@ -56,8 +56,9 @@ case class Play (field:Field, row: Int, col: Int, d :Direction) {
   }
 
   def rematch(n1: Ninja, n2: Ninja): Unit = {
-    n1.weapon = field.randWeapon()
-    n2.weapon = field.randWeapon()
+    val fc = new FieldCreator(row, col)
+    n1.weapon = fc.randWeapon()
+    n2.weapon = fc.randWeapon()
     fight(n1, n2)
   }
 

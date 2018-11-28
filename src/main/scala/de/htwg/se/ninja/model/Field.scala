@@ -6,5 +6,6 @@ case class Field(matrix : Array[Array[Cell]]) {
       for {r <- 0 until row
            c <- 0 until col}
        matrix(r)(c) = Cell(None)
-    }
+  }
+
 }
