@@ -1,6 +1,6 @@
 package de.htwg.se.ninja.model
 
 object Direction extends Enumeration {
-  type Direction = Value
+  type value = Value
   val right, left, up, down = Value
 }

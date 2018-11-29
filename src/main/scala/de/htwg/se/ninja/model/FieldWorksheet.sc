@@ -1,4 +1,4 @@
-import de.htwg.se.ninja.model.Weapons.Weapons
+import de.htwg.se.ninja.model.Weapon.value
 import de.htwg.se.ninja.model._
 
 case class Field(matrix : Array[Array[Cell]]) {
@@ -36,13 +36,13 @@ object FieldCreator /*( row: Int, col: Int)*/ {
     }
   }
 
-  def randWeapon(): Weapons = {
+  def randWeapon(): value = {
     val r = scala.util.Random
     val n: Int = r.nextInt(3)
     n match {
-      case 0 => Weapons.scissors
-      case 1 => Weapons.stone
-      case 2 => Weapons.paper
+      case 0 => Weapon.scissors
+      case 1 => Weapon.stone
+      case 2 => Weapon.paper
     }
   }
 }

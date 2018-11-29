@@ -1,8 +1,6 @@
 package de.htwg.se.ninja.model
 
-object Weapons extends Enumeration {
-  type Weapons = Value
+object Weapon extends Enumeration {
+  type value = Value
   val scissors, stone, paper, flag = Value
-
-
 }

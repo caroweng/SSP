@@ -1,8 +1,8 @@
 package de.htwg.se.ninja.model
 
-case class Cell (n: Option[Ninja]) {
-  def getNinja(): Ninja = {
+case class Cell(ninja: Option[Ninja]) {
 
-  }
+  def +(ninja: Ninja): Cell = ???
+  def -(ninja: Ninja): Cell = ???
 }
 

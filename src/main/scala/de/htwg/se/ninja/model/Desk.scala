@@ -1,8 +1,16 @@
 package de.htwg.se.ninja.model
-import Direction.Direction
-import Weapons.Weapons
+import Direction.value
+import Weapon.value
 
-case class Play (field: Field, row: Int, col: Int, d :Direction) {
+case class Desk(field: Field, player1 : Player, player2: Player) {
+
+
+
+  def walk(player: Player, ninja: Ninja, direction: Direction.value) : Desk = ???
+
+
+
+
 
   field(row)(col) match {
     case None =>
@@ -62,20 +70,20 @@ case class Play (field: Field, row: Int, col: Int, d :Direction) {
     fight(n1, n2)
   }
 
-  def weaponWeight(w1: Weapons, w2: Weapons) : Boolean = {
+  def weaponWeight(w1: value, w2: value) : Boolean = {
       w1 match {
-        case Weapons.stone =>
-          if (w2 == Weapons.paper)
+        case Weapon.stone =>
+          if (w2 == Weapon.paper)
             false
           else
             true
-        case Weapons.scissors =>
-          if (w2 == Weapons.stone)
+        case Weapon.scissors =>
+          if (w2 == Weapon.stone)
             false
           else
             true
-        case Weapons.paper =>
-          if (w2 == Weapons.scissors)
+        case Weapon.paper =>
+          if (w2 == Weapon.scissors)
             false
           else
             true

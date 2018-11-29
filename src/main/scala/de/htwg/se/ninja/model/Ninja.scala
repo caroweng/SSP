@@ -1,18 +1,9 @@
 package de.htwg.se.ninja.model
 
-import Weapons.Weapons
-import de.htwg.se.ninja.model.Team.Team
 
-class Ninja  {
-  var team: Team =_
-  var weapon: Weapons =_
-}
+class Ninja(weapon:  Weapon.value, player: Player)  {
 
-object Ninja {
-  def apply(team: Team, weapon: Weapons): Ninja = {
-    var n = new Ninja
-    n.team = team
-    n.weapon = weapon
-    n
-  }
+  def changeWeapon(weapon: Weapon.value) : Ninja =
+
+
 }
