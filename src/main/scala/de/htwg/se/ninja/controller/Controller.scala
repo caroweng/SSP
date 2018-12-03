@@ -1,11 +1,10 @@
 package de.htwg.se.ninja.controller
 
-import de.htwg.se.ninja.model.Direction.value
 import de.htwg.se.ninja.model.{Field, Desk}
 import de.htwg.se.ninja.util.Observable
 
 class Controller (var field: Field) extends Observable{
-
+/*
   def createNewField(row: Int, col: Int):Unit = {
     field = new Field(row, col)
     notifyObservers
@@ -17,5 +16,5 @@ class Controller (var field: Field) extends Observable{
     field = Play(field).walk(d, row, col)
     notifyObservers
   }
-
+*/
 }

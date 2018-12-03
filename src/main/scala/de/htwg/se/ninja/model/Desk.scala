@@ -1,99 +1,41 @@
 package de.htwg.se.ninja.model
-import Direction.value
-import Weapon.value
 
 case class Desk(field: Field, player1 : Player, player2: Player) {
 
+  def setNewGame(): Desk = this.copy(field = setNinjas(setEmpty(field)))
 
-
-  def walk(player: Player, ninja: Ninja, direction: Direction.value) : Desk = ???
-
-
-
-
-
-  field(row)(col) match {
-    case None =>
-    case Some(n1: Ninja) => walk(n1)
+  def setEmpty(field: Field): Field = {
+    val field2 = Field(field.matrix)
+    for {i <- 0 until field.matrix.length
+         j <- 0 until field.matrix.length}
+      field2.matrix(i)(j) = Cell(None)
+    field.copy(matrix = field2.matrix)
   }
 
-  val n1: Ninja = field.matrix(row)(col)[Ninja]
-
-  def walk(n: Ninja): Field = {
-
-    d match {
-      case Direction.right =>
-        if (exists(row, col + 1))
-          move(row, col + 1)
-      case Direction.left =>
-        if (exists(row, col - 1))
-          move(row, col - 1)
-      case Direction.up =>
-        if (exists(row + 1, col))
-          move(row + 1, col)
-      case Direction.down =>
-        if (exists(row - 1, col))
-          move(row - 1, col)
+  def setNinjas(field: Field): Field = {
+    var n, m = 0
+    val field2 = Field(field.matrix)
+    for {r <- 0 until this.ninjaRows(field)
+         c <- 0 until field.matrix.length} {
+      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.randWeapon(), player1, n)))
+      n += 1
     }
-    copy(field)
-  }
-    def move(nrow: Int, ncol: Int): Field = {
-      field(nrow)(ncol) match {
-        case None => field(nrow)(ncol) = field(row)(col)
-          field(row)(col) = Cell(None)
-
-        case Some(n2: Ninja) =>
-          fight(n1, n2) match {
-            case None => field.matrix(nrow)(ncol) = Cell(None)
-            case Some(n) => field.matrix(nrow)(ncol) = field.matrix(row)(col)
-              field.matrix(row)(col) = Cell(None)
-          }
-      }
-
+    for {r <- field.matrix.length - this.ninjaRows(field) until field.matrix.length
+         c <- 0 until field.matrix.length} {
+      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.randWeapon(), player2, m)))
+      m += 1
     }
-
-  def fight(n1: Ninja, n2: Ninja): Option[Ninja] = {
-    if(n1.weapon == n2.weapon) {
-      rematch(n1, n1)
-    }
-    if(weaponWeight(n1.weapon, n2.weapon)) {
-      Some(n1)
-    } else {
-      None
-    }
+    field.copy(matrix = field2.matrix)
   }
 
-  def rematch(n1: Ninja, n2: Ninja): Unit = {
-    val fc = new FieldCreator(row, col)
-    n1.weapon = fc.randWeapon()
-    n2.weapon = fc.randWeapon()
-    fight(n1, n2)
-  }
+  def ninjaRows(field: Field): Int = if (field.matrix.length / 3 < 2) 1 else 2
 
-  def weaponWeight(w1: value, w2: value) : Boolean = {
-      w1 match {
-        case Weapon.stone =>
-          if (w2 == Weapon.paper)
-            false
-          else
-            true
-        case Weapon.scissors =>
-          if (w2 == Weapon.stone)
-            false
-          else
-            true
-        case Weapon.paper =>
-          if (w2 == Weapon.scissors)
-            false
-          else
-            true
-      }
-  }
-
-  def exists(r: Int, c: Int): Boolean = {
-    field.matrix(r)(c) match {
-      case Cell(None) || Cell(Some(n))  => true
-      case _ => false
+  def walk(player: Player, ninja: Ninja, direction: Direction.direction): Desk = {
+    try {
+      field.exists(ninja, direction)
+      this.copy(field = field.move(ninja, direction))
+    } catch {
+      case _ => throw new NoSuchElementException
     }
   }
 }

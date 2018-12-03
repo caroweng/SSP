@@ -1,53 +1,54 @@
 package de.htwg.se.ninja.model
 
-import de.htwg.se.ninja.model.Weapon.value
-
 case class Field(matrix: Array[Array[Cell]]) {
-  def move(ninja: Ninja, dierect: value): Field = ???
+//new Field(Array.ofDim[Cell](3,3))
 
-  /*
-    def randWeapon(): Weapons = {
-      val r = scala.util.Random
-      val n: Int = r.nextInt(3)
-      n match {
-        case 0 => Weapons.scissors
-        case 1 => Weapons.stone
-        case 2 => Weapons.paper
-      }*/
-  /*
-  def initEmpty(amountOfRows: Int): Field ={
-    matrix.foreach(cell => Cell(None))
-    copy(matrix = matrix)
+  def matrix(tupel: (Int, Int)): Cell = matrix(tupel._1)(tupel._2)
+
+  def getPosition(ninja: Ninja): (Int, Int) = {
+    for{r <- 0 until matrix.length
+        c <- 0 until matrix.length}
+      if(matrix(r)(c) == Cell(Some(Ninja(ninja.weapon, ninja.player, ninja.id))))
+        return (r,c)
+    throw new NoSuchElementException()
   }
 
-
-  def this(row: Int, col: Int) = {
-    this(Array.ofDim[Cell](row, col))
-    for {r <- 0 until row
-         c <- 0 until col}
-      matrix(r)(c) = Cell(None)
-  }*/
-  /*def newGame(row: Int, col: Int): Field = {
-    val field = new Field(row, col)
-    if (row <= 2 && col <= 1) {
-      throw new IllegalArgumentException("Ungültige Arraygröße")
+  def move(ninja: Ninja, direction: Direction.direction): Field = {
+    val a = add(getPosition(ninja), Direction.getDirectionIndex(direction))
+    matrix(a).ninja match {
+      case None => matrix(getPosition(ninja)).-(ninja)
+                   matrix(a).+(ninja)
+                   this
+      case Some(n2) => fight(ninja,  n2)
+                       this
     }
+  }
 
-    if (row / 3 < 2) {
-      for (j <- 0 until col) {
-        field.matrix(0)(j) = Cell(Some(Ninja(Team.T1, randWeapon())))
-        field.matrix(row - 1)(j) = Cell(Some(Ninja(Team.T2, randWeapon())))
-      }
-      field
-    } else {
-      for {r <- 0 to 1
-           c <- 0 until col}
-        field.matrix(r)(c) = Cell(Some(Ninja(Team.T1, randWeapon())))
+  def fight(n1: Ninja, n2: Ninja): Option[Ninja] = {
+    if(n1.weapon == n2.weapon) rematch(n1, n2)
+    if(weaponWeight(n1.weapon, n2.weapon)) Some(n1) else None
+  }
 
-      for {r <- row - 2 until row
-           c <- 0 until col}
-        field.matrix(r)(c) = Cell(Some(Ninja(Team.T2, randWeapon())))
-      field
+  def rematch(n1: Ninja, n2: Ninja): Unit = {
+    n1.copy(weapon = Weapon.randWeapon())
+    n2.copy(weapon = Weapon.randWeapon())
+    this.fight(n1, n2)
+  }
+
+  def weaponWeight(w1: Weapon.weapon, w2: Weapon.weapon) : Boolean = {
+    w1 match {
+      case Weapon.stone =>
+        if (w2 == Weapon.paper) false else true
+      case Weapon.scissors =>
+        if (w2 == Weapon.stone) false else true
+      case Weapon.paper =>
+        if (w2 == Weapon.scissors) false else true
     }
-  }*/
+  }
+
+  def exists(ninja: Ninja, direction: Direction.direction): Boolean = inBounds(add(getPosition(ninja), Direction.getDirectionIndex(direction)))
+
+  def add(base: (Int, Int), amount: (Int, Int)): (Int, Int) = (base._1 + amount._1, base._2 + amount._2)
+
+  def inBounds(tuple: (Int, Int)): Boolean = tuple._1 < matrix.length && tuple._1 >= 0 && tuple._2 < matrix.length && tuple._2 >= 0
 }

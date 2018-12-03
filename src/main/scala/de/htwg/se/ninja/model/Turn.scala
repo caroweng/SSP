@@ -1,6 +1,6 @@
 package de.htwg.se.ninja.model
 
 object Turn extends Enumeration {
-  type value = Value
+  type turn = Value
   val go, pause = Value
 }

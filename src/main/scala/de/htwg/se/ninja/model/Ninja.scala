@@ -1,9 +1,6 @@
 package de.htwg.se.ninja.model
 
 
-class Ninja(weapon:  Weapon.value, player: Player)  {
-
-  def changeWeapon(weapon: Weapon.value) : Ninja =
-
-
+case class Ninja(weapon: Weapon.weapon, player: Player, id: Int)  {
+  def changeWeapon(w: Weapon.weapon) : Ninja = this.copy(weapon = w)
 }
