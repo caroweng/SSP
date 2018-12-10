@@ -1,28 +1,31 @@
 package de.htwg.se.ninja.model
 
 case class Field(matrix: Array[Array[Cell]]) {
-//new Field(Array.ofDim[Cell](3,3))
-
   def matrix(tupel: (Int, Int)): Cell = matrix(tupel._1)(tupel._2)
 
-  def getPosition(ninja: Ninja): (Int, Int) = {
-    for{r <- 0 until matrix.length
-        c <- 0 until matrix.length}
-      if(matrix(r)(c) == Cell(Some(Ninja(ninja.weapon, ninja.player, ninja.id))))
-        return (r,c)
+  def getPosition(n1: Ninja): (Int, Int) = {
+    for(r <- matrix.indices)
+        for(c <- matrix.indices)
+          if (matrix(r)(c).ninja.getOrElse("kein Ninja") == Ninja(n1.weapon, n1.player, n1.id))
+            return (r, c)
+
     throw new NoSuchElementException()
   }
 
-  def move(ninja: Ninja, direction: Direction.direction): Field = {
-    val a = add(getPosition(ninja), Direction.getDirectionIndex(direction))
-    matrix(a).ninja match {
-      case None => matrix(getPosition(ninja)).-(ninja)
-                   matrix(a).+(ninja)
-                   this
-      case Some(n2) => fight(ninja,  n2)
+  def move(n1: Ninja, direction: Direction.direction): Field = {
+    val pos = getPosition(n1)
+    val newpos = add(pos, Direction.getDirectionIndex(direction))
+    matrix(newpos).ninja match {
+      case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
+
+      case Some(n2) => fight(n1,  n2)
                        this
     }
   }
+
+  def -(ninja: Ninja, pos: (Int,Int)): Field = copy(matrix.updated(pos._1, matrix(pos._1).updated(pos._2, Cell(None))))
+
+  def +(ninja: Ninja, pos: (Int,Int)): Field = copy(matrix.updated(pos._1, matrix(pos._1).updated(pos._2, Cell(Some(ninja)))))
 
   def fight(n1: Ninja, n2: Ninja): Option[Ninja] = {
     if(n1.weapon == n2.weapon) rematch(n1, n2)

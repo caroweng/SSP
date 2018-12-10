@@ -1,2 +1,4 @@
-val desk = Array.ofDim[Int](4,6)
-val l = desk(0).length
+import scala.util.Random
+val t = (System.currentTimeMillis)
+val r = new Random(t)
+print(r.nextInt(10))

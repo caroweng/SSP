@@ -8,8 +8,8 @@ object Direction extends Enumeration {
     direction match{
       case Direction.right => (0,1)
       case Direction.left => (0,-1)
-      case Direction.up => (1,0)
-      case Direction.down => (-1,0)
+      case Direction.up => (-1,0)
+      case Direction.down => (1,0)
     }
   }
 }
