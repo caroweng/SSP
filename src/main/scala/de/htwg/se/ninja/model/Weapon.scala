@@ -7,14 +7,22 @@ object Weapon extends Enumeration {
   val scissors, stone, paper, flag = Value
 
   def randWeapon(): Weapon.weapon = {
-//    val r = new Random()
-//    val n = r.nextInt(3)
-    val t = System.currentTimeMillis()
-    val r =  t % 3
-    r match {
+    val r = new Random()
+    val n = r.nextInt(3)
+//    val t = System.currentTimeMillis()
+//    val r =  t % 3
+    n match {
       case 0 => Weapon.scissors
       case 1 => Weapon.stone
       case 2 => Weapon.paper
+    }
+  }
+
+  override def toString: String = {
+    this match {
+      case Weapon.scissors => "s"
+      case Weapon.paper => "p"
+      case Weapon.stone => "r"
     }
   }
 }

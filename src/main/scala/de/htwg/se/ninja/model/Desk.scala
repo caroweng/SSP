@@ -35,4 +35,26 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
       case false => throw new NoSuchElementException
     }
   }
+
+  def toDirection(dir: String): Direction.direction = {
+    dir match{
+      case "down" => Direction.down
+      case "up" => Direction.up
+      case "left" => Direction.left
+      case "right" => Direction.right
+    }
+  }
+
+  override def toString: String = {
+    val rows = this.field.matrix.length
+    val line =("|" + "  " )*rows + "|\n"
+    var box = "\n" + (line * rows)
+
+    for {i <- this.field.matrix.indices
+         j <- this.field.matrix.indices}
+        box = box.replaceFirst("  ",  this.field.matrix(i,j).toString)
+    box
+  }
+
+  def getPlayerWithName(name: String): Player = if(this.player1.name  == name) player1 else player2
 }

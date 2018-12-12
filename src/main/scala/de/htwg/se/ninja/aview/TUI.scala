@@ -1,18 +1,28 @@
-/*package de.htwg.se.ninja.aview
+package de.htwg.se.ninja.aview
 
 import de.htwg.se.ninja.model.{Desk, Field, Player}
 
 class Tui {
-  def input(input: String, desk: Desk): Desk = {
-    input match{
-      case "n" => desk.setNewGame()
-      case "f" => setFlag()
-      case _ => input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
-        case row :: colum :: Nil =>
+
+    def input(input: String, desk: Desk): Desk = {
+      input match{
+        case "q" => desk
+        case "n" => desk.setNewGame()
+        case _ =>
+          input.split(" ").toList match {
+            case player :: row :: col :: direction :: Nil  => desk.walk(desk.getPlayerWithName(player), desk.field.matrix(row.toInt, col.toInt).ninja.get, desk.toDirection(direction))
+          }
+
+
+        /* case "p"
+
+        case "f" => setFlag()
+
+
+
+          player, row, col, down
+*/
+
       }
     }
-  }
 }
-
-
-walk(player1, ninja, direction)
