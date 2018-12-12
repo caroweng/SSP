@@ -18,8 +18,8 @@ case class Field(matrix: Array[Array[Cell]]) {
     matrix(newpos).ninja match {
       case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
 
-      case Some(n2) => fight(n1,  n2)
-                       this
+      case Some(n2) => this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
+
     }
   }
 
@@ -27,15 +27,12 @@ case class Field(matrix: Array[Array[Cell]]) {
 
   def +(ninja: Ninja, pos: (Int,Int)): Field = copy(matrix.updated(pos._1, matrix(pos._1).updated(pos._2, Cell(Some(ninja)))))
 
-  def fight(n1: Ninja, n2: Ninja): Option[Ninja] = {
-    if(n1.weapon == n2.weapon) rematch(n1, n2)
-    if(weaponWeight(n1.weapon, n2.weapon)) Some(n1) else None
-  }
-
-  def rematch(n1: Ninja, n2: Ninja): Unit = {
-    n1.copy(weapon = Weapon.randWeapon())
-    n2.copy(weapon = Weapon.randWeapon())
-    this.fight(n1, n2)
+  def fight(n1: Ninja, n2: Ninja): Ninja = {
+    if(n1.weapon == n2.weapon) {
+      val newN = n1.copy(weapon = Weapon.randWeapon())
+      if(weaponWeight(newN.weapon, n2.weapon)) return newN else return n2
+    }
+    if(weaponWeight(n1.weapon, n2.weapon)) n1 else n2
   }
 
   def weaponWeight(w1: Weapon.weapon, w2: Weapon.weapon) : Boolean = {

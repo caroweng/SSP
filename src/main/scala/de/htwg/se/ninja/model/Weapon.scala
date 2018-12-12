@@ -7,7 +7,9 @@ object Weapon extends Enumeration {
   val scissors, stone, paper, flag = Value
 
   def randWeapon(): Weapon.weapon = {
-    val t = System.nanoTime()
+//    val r = new Random()
+//    val n = r.nextInt(3)
+    val t = System.currentTimeMillis()
     val r =  t % 3
     r match {
       case 0 => Weapon.scissors
