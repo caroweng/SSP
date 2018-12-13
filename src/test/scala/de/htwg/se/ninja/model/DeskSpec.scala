@@ -46,5 +46,24 @@ class DeskSpec extends WordSpec with Matchers{
         newDesk.field.matrix(1,2).ninja should be(Some(n1))
       }
     }
+
+   /* " a ninja " should{
+      val n6 = desk.field.matrix(0)(0).ninja.get
+      //val d4: Desk = desk.setFlag(n6)
+      "with flag" in {
+        //d4.field.matrix(0,0).ninja.get.weapon should be (Weapon.flag)
+       // d2.field.matrix(0)(2).ninja.get.weapon should be(Weapon.flag)
+      }
+    }
+
+    "a ninja" should{
+      val n2 = desk.field.matrix(2)(0).ninja.get
+      val n3 = desk.field.matrix(2)(1).ninja.get
+      val d4 = desk.setNewGame().setFlag(n2)
+      "wins" in {
+        d4.field.matrix(2)(1).ninja should be(Some(n3))
+        // desk.win(desk.field.getPosition(n3)_1 , desk.field.getPosition(n3)_2, Direction.left) should be (true)
+      }
+    }*/
   }
 }

@@ -13,12 +13,15 @@ case class Field(matrix: Array[Array[Cell]]) {
   }
 
   def move(n1: Ninja, direction: Direction.direction): Field = {
+    if(n1.weapon == Weapon.flag) throw new IllegalStateException()
+
     val pos = getPosition(n1)
     val newpos = add(pos, Direction.getDirectionIndex(direction))
     matrix(newpos).ninja match {
       case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
 
-      case Some(n2) => this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
+      case Some(n2) => if(n2.player == n1.player) throw new IllegalArgumentException
+                          this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
 
     }
   }

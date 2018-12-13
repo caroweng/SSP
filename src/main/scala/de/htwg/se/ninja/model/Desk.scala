@@ -57,4 +57,21 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
   }
 
   def getPlayerWithName(name: String): Player = if(this.player1.name  == name) player1 else player2
+
+  def setFlag(row : Int , col : Int): Desk = {
+    val d2 = this.field
+    val ninja = this.field.matrix(row)(col).ninja.get
+    d2.matrix(row)(col) = Cell(Some(Ninja(Weapon.flag, ninja.player, ninja.id)))
+    copy(field = d2)
+  }
+
+  def win(row: Int, col: Int, d: Direction.direction): Boolean = {
+    val n1 = this.field.matrix(this.field.add((row,col), Direction.getDirectionIndex(d))).ninja.getOrElse(return  false)
+    if(n1.weapon == Weapon.flag) true else false
+  }
+
+  def changeTurns(): Desk = {
+    copy(player1 = this.player1.changeTurn(player2.state), player2 = this.player2.changeTurn(player1.state))
+  }
+
 }
