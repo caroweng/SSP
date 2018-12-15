@@ -65,5 +65,11 @@ class DeskSpec extends WordSpec with Matchers{
         // desk.win(desk.field.getPosition(n3)_1 , desk.field.getPosition(n3)_2, Direction.left) should be (true)
       }
     }*/
+    "a player" should {
+
+      "win" in {
+
+      }
+    }
   }
 }
