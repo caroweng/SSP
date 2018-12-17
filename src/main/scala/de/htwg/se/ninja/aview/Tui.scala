@@ -28,7 +28,7 @@ class Tui (controller: Controller) extends Observer{
             } else {
               print("Sie haben ihr Flaggenpensum für heute aufgebraucht")
             }
-          case _ => print("Nochmal")
+          case _ => print("Nochmal bitte")
         }
       case "w" => {
         input.split(" ").toList match {
