@@ -49,10 +49,7 @@ class FieldSpec extends WordSpec with Matchers {
       val winner = desk.field.fight(n1, n2)
       val winner2 = desk.field.fight(n2,n3)
       "ninja1 wins" in {
-        desk.field.matrix(0,2).ninja.get.weapon should be (desk.field.matrix(2,2).ninja.get.weapon)
         winner should be(n1)
-        winner2.weapon should be(Weapon.paper)
-        winner2 should be(n3)
       }
     }
   }

@@ -9,11 +9,12 @@ class NinjaSpec extends WordSpec with Matchers{
       "have a name and a weapon" in {
         ninja.player.name should be("helen")
         ninja.weapon should be(Weapon.scissors)
-        "change its weapon" in {
-          ninja.changeWeapon(Weapon.paper)
-          ninja.weapon should be(Weapon.paper)
-        }
       }
+        "change its weapon" in {
+          val n2 = ninja.changeWeapon(Weapon.paper)
+          n2.weapon should be(Weapon.paper)
+        }
+
     }
   }
 }

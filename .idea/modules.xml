@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Software Engineering.iml" filepath="$PROJECT_DIR$/.idea/modules/Software Engineering.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/semster3-htwg-build.iml" filepath="$PROJECT_DIR$/.idea/modules/semster3-htwg-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/software-engineering-build.iml" filepath="$PROJECT_DIR$/.idea/modules/software-engineering-build.iml" />
     </modules>
   </component>
 </project>

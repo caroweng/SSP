@@ -71,7 +71,7 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
     val ninja = this.field.matrix(row)(col).ninja.get
     if(player.flag)
       throw new IllegalArgumentException
-    if(ninja.player != player)
+    if(ninja.player.name != player.name)
       throw new IllegalStateException
     d2.matrix(row)(col) = Cell(Some(Ninja(Weapon.flag, ninja.player, ninja.id)))
     if(player == player1)
