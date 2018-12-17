@@ -1,1 +1,1 @@
-<a href='https://coveralls.io/github/caroweng/SSP?branch=master'><img src='https://coveralls.io/repos/github/caroweng/SSP/badge.svg?branch=master' alt='Coverage Status' /></a>
+[![Coverage Status](https://coveralls.io/repos/github/caroweng/SSP/badge.svg?branch=master)](https://coveralls.io/github/caroweng/SSP?branch=master)
