@@ -18,20 +18,17 @@ class Tui (controller: Controller) extends Observer{
     in.head match{
       case "q" =>
       case "n" => controller.newGame()
+                  state = 0
+                  anzFlag = 0
       case "f" =>
         input.split(" ").toList match {
-          case f :: row :: col :: Nil  =>
+          case f :: player :: row :: col :: Nil  =>
             if(anzFlag < 2 && state == 0) {
-              try {
-                controller.setFlag(row, col)
-                anzFlag += 1
-              } catch{
-                case iA: IllegalArgumentException => print("Du hast leider keinen ninja getroffen")
-              }
-              if (anzFlag == 2) state = 1
+              tryFlag(player, row, col)
             } else {
               print("Sie haben ihr Flaggenpensum für heute aufgebraucht")
             }
+          case _ => print("Nochmal")
         }
       case "w" => {
         input.split(" ").toList match {
@@ -55,7 +52,19 @@ class Tui (controller: Controller) extends Observer{
             else print("anderer Spieler ist dran")
         }
       }
-      case _ =>
+      case _ => print("Dat war wohl nichts... nochmal! ")
+    }
+  }
+
+  def tryFlag(player: String, row: String, col: String): Unit = {
+    try {
+      controller.setFlag(player, row, col)
+      anzFlag += 1
+    } catch {
+      case nS: NoSuchElementException => print("Du hast leider keinen ninja getroffen")
+      case iA: IllegalArgumentException => print("Player hat schon eine Flagge")
+      case iS: IllegalStateException => print("Ninja gehört dir nicht!")
+        if (anzFlag == 2) state = 1
     }
   }
 

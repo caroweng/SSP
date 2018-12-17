@@ -4,8 +4,8 @@ import org.scalatest.{Matchers, WordSpec}
 
 class DeskSpec extends WordSpec with Matchers{
   "A desk" when {
-    val playerC = Player("helen", Turn.pause)
-    val playerH = Player("caro", Turn.go)
+    val playerC = Player("helen", Turn.pause, false)
+    val playerH = Player("caro", Turn.go, false)
     val desk = Desk(Field(Array.ofDim[Cell](3, 3)), playerC, playerH)
     "new game set" should {
       desk.setNewGame()
@@ -47,28 +47,43 @@ class DeskSpec extends WordSpec with Matchers{
       }
     }
 
-   /* " a ninja " should{
-      val n6 = desk.field.matrix(0)(0).ninja.get
-      //val d4: Desk = desk.setFlag(n6)
+    " a ninja " should{
+      val ddd: Desk = desk.setFlag(playerC, 0, 0)
       "with flag" in {
-        //d4.field.matrix(0,0).ninja.get.weapon should be (Weapon.flag)
-       // d2.field.matrix(0)(2).ninja.get.weapon should be(Weapon.flag)
+        ddd.field.matrix(0,0).ninja.get.weapon should be (Weapon.flag)
       }
     }
 
     "a ninja" should{
-      val n2 = desk.field.matrix(2)(0).ninja.get
       val n3 = desk.field.matrix(2)(1).ninja.get
-      val d4 = desk.setNewGame().setFlag(n2)
+      val d4 = desk.setFlag(playerH, 2,0 )
       "wins" in {
         d4.field.matrix(2)(1).ninja should be(Some(n3))
-        // desk.win(desk.field.getPosition(n3)_1 , desk.field.getPosition(n3)_2, Direction.left) should be (true)
+        d4.win(d4.field.getPosition(n3)_1 , d4.field.getPosition(n3)_2, Direction.left) should be (true)
       }
-    }*/
-    "a player" should {
+    }
 
-      "win" in {
-
+    "a Player" should{
+      val einDesk = desk.changeTurns()
+      "have a turn" in {
+        desk.player1.state should be (Turn.pause)
+        desk.player2.state should be (Turn.go)
+      }
+      "change turn" in {
+        einDesk.player1.state should be(Turn.go)
+        einDesk.player2.state should be(Turn.pause)
+      }
+    }
+    "a Player" should {
+      val name = "helen"
+      "be identified by its name" in {
+        desk.getPlayerWithName(name) should be(desk.player1)
+      }
+    }
+    "a String" should {
+      val s = "down"
+      "become a direction" in {
+        desk.toDirection(s) should be (Direction.down)
       }
     }
   }

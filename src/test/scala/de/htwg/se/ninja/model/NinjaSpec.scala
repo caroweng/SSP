@@ -5,7 +5,7 @@ import org.scalatest.{Matchers, WordSpec}
 class NinjaSpec extends WordSpec with Matchers{
   "A Ninja" when {
     "be constructed" should {
-      val ninja = Ninja(Weapon.scissors,Player("helen", Turn.pause), 2)
+      val ninja = Ninja(Weapon.scissors,Player("helen", Turn.pause, false), 2)
       "have a name and a weapon" in {
         ninja.player.name should be("helen")
         ninja.weapon should be(Weapon.scissors)

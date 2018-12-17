@@ -4,8 +4,8 @@ import org.scalatest.{Matchers, WordSpec}
 
 class FieldSpec extends WordSpec with Matchers {
   "A field" when {
-    val player1 = Player("helen", Turn.pause)
-    val player2 = Player("caro", Turn.go)
+    val player1 = Player("helen", Turn.pause, false)
+    val player2 = Player("caro", Turn.go, false)
     val field = Field(Array.ofDim[Cell](3, 3))
     var desk = Desk(field, player1, player2)
     desk = desk.setNewGame()
@@ -49,10 +49,10 @@ class FieldSpec extends WordSpec with Matchers {
       val winner = desk.field.fight(n1, n2)
       val winner2 = desk.field.fight(n2,n3)
       "ninja1 wins" in {
-//        desk.field.matrix(0,2).ninja.get.weapon should be (desk.field.matrix(2,2).ninja.get.weapon)
-//        winner should be(n1)
+        desk.field.matrix(0,2).ninja.get.weapon should be (desk.field.matrix(2,2).ninja.get.weapon)
+        winner should be(n1)
         winner2.weapon should be(Weapon.paper)
-//        winner2 should be(n3)
+        winner2 should be(n3)
       }
     }
   }

@@ -15,9 +15,9 @@ class Controller (var desk: Desk) extends Observable {
     notifyObservers
   }
 
-  def setFlag(row: String, col: String): Unit = {
-    val ninja = desk.field.matrix(row.toInt, col.toInt).ninja.getOrElse(throw new IllegalArgumentException)
-    desk = desk.setFlag(row.toInt, col.toInt)
+  def setFlag(player: String, row: String, col: String): Unit = {
+    val ninja = desk.field.matrix(row.toInt, col.toInt).ninja.getOrElse(throw new NoSuchElementException)
+    desk = desk.setFlag(desk.toPlayer(player), row.toInt, col.toInt)
     notifyObservers
   }
 
@@ -38,10 +38,8 @@ class Controller (var desk: Desk) extends Observable {
     desk = desk.changeTurns()
   }
 
-
   def checkState(player: String): Boolean = {
     if(desk.getPlayerWithName(player).state == Turn.go) true else false
-
   }
 
 }
