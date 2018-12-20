@@ -1,23 +1,32 @@
 package de.htwg.se.ninja.model
 
 case class Field(matrix: Array[Array[Cell]]) {
+
   def matrix(tupel: (Int, Int)): Cell = matrix(tupel._1)(tupel._2)
 
   def getPosition(n1: Ninja): (Int, Int) = {
     for(r <- matrix.indices)
         for(c <- matrix.indices)
-          if (matrix(r)(c).ninja.getOrElse("kein Ninja") == Ninja(n1.weapon, n1.player, n1.id))
+          if (matrix(r)(c).optNinja.getOrElse("kein Ninja") == Ninja(n1.weapon, n1.player, n1.id))
             return (r, c)
 
     throw new NoSuchElementException()
   }
+
+  def isNinjaOfPlayerAtPosition(player: Player, row: Int, col: Int): Boolean = {
+    if (matrix(row)(col).exists() && matrix(row, col).getNinja().player == player) {
+      return true
+    }
+    false
+  }
+
 
   def move(n1: Ninja, direction: Direction.direction): Field = {
     if(n1.weapon == Weapon.flag) throw new IllegalStateException()
 
     val pos = getPosition(n1)
     val newpos = add(pos, Direction.getDirectionIndex(direction))
-    matrix(newpos).ninja match {
+    matrix(newpos).optNinja match {
       case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
 
       case Some(n2) => if(n2.player == n1.player) throw new IllegalArgumentException

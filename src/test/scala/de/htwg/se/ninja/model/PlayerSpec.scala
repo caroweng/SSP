@@ -5,8 +5,8 @@ import org.scalatest.{Matchers, WordSpec}
 class PlayerSpec extends WordSpec with Matchers{
   "A Player" when {
 
-    val player1 = Player("caro", Turn.go, false)
-    val player2 = Player("helen", Turn.pause, false)
+    val player1 = Player("caro", Turn.go)
+    val player2 = Player("helen", Turn.pause)
 
     "be constructed with a name" in {
       player1.name should be("caro")

@@ -3,70 +3,53 @@ package de.htwg.se.ninja.aview
 import java.util.NoSuchElementException
 
 import de.htwg.se.ninja.controller.Controller
-import de.htwg.se.ninja.model.{Desk, Field, Player}
+import de.htwg.se.ninja.model.{Desk, Direction, Field, Player}
 import de.htwg.se.ninja.util.Observer
+import de.htwg.se.ninja.controller.State
+import de.htwg.se.ninja.model.Direction.direction
 
-class Tui (controller: Controller) extends Observer{
+import scala.util.matching.Regex
 
+class Tui(controller: Controller) extends Observer {
+
+  val FlagRegex: Regex = "f \\d \\d".r
+  val WalkRegex: Regex = "w \\d \\d (up|down|right|left)".r
   controller.add(this)
-  var state = 0
-  var anzFlag = 0
+
+
+  def flagInput(input: String): Unit = {
+    input match {
+      case FlagRegex() => controller.setFlag(input.split(" ")(1).toInt, input.split(" ")(2).toInt)
+      case _ => print("Eingabe war nicht korrekt bitte in der Form ??? eingeben")
+    }
+  }
+
+  def turnInput(input: String): Unit = {
+    input match {
+    case WalkRegex() => controller.wonOrTurn(input)
+    case _ => print("Eingabe war nicht korrekt bitte in der Form ??? eingeben")
+    }
+  }
+
 
   def input(input: String): Unit = {
-
-    val in = input.split(" ").toList
-    in.head match{
-      case "q" =>
-      case "n" => controller.newGame()
-                  state = 0
-                  anzFlag = 0
-      case "f" =>
-        input.split(" ").toList match {
-          case f :: player :: row :: col :: Nil  =>
-            if(anzFlag < 2 && state == 0) {
-              tryFlag(player, row, col)
-            } else {
-              print("Sie haben ihr Flaggenpensum für heute aufgebraucht")
-            }
-          case _ => print("Nochmal bitte")
-        }
-      case "w" => {
-        input.split(" ").toList match {
-          case w :: player :: row :: col :: direction :: Nil =>
-            if (controller.checkState(player) && state == 1) {
-              val success = controller.win(row, col, direction)
-              if (success) {
-                println(player + "hat gewonnen!")
-                controller.newGame()
-              } else {
-                try {
-                  controller.walk(player, row, col, direction)
-                  controller.changeTurn()
-                } catch {
-                  case no: NoSuchElementException => print("Feld existiert nicht")
-                  case iS: IllegalStateException => print("Mit Flagge darf nicht gelaufen werden")
-                  case iA: IllegalArgumentException => print("Eigentor")
-                }
-              }
-            } else if (state == 0) print("setz Flagge")
-            else print("anderer Spieler ist dran")
-        }
-      }
-      case _ => print("Dat war wohl nichts... nochmal! ")
+    controller.state match {
+      case State.SET_FLAG1 => flagInput(input)
+      case State.SET_FLAG2 => flagInput(input)
+      case State.TURN => turnInput(input)
+      case State.WON =>
+        print("Du hast gewonne. gluckwunsch. ciaio")
+        System.exit(0)
     }
   }
 
-  def tryFlag(player: String, row: String, col: String): Unit = {
-    try {
-      controller.setFlag(player, row, col)
-      anzFlag += 1
-    } catch {
-      case nS: NoSuchElementException => print("Du hast leider keinen ninja getroffen")
-      case iA: IllegalArgumentException => print("Player hat schon eine Flagge")
-      case iS: IllegalStateException => print("Ninja gehört dir nicht!")
-        if (anzFlag == 2) state = 1
-    }
-  }
 
-  override def update: Unit = println(controller.deskToString)
+  override def update: Unit = {
+    controller.state match {
+      case State.DIRECTION_DOES_NOT_EXIST => print()
+      case State.TURN => print()
+      case _ =>
+    }
+    println(controller.deskToString)
+  }
 }

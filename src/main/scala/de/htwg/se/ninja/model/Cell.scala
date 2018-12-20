@@ -1,13 +1,16 @@
 package de.htwg.se.ninja.model
 
-case class Cell(ninja: Option[Ninja]) {
+case class Cell(optNinja: Option[Ninja]) {
   override def toString: String ={
-    if(this.ninja.isEmpty) {
+    if(this.optNinja.isEmpty) {
       val str = ""
       str
     } else {
-      val str =  ninja.get.player.name + " " + ninja.get.weapon.toString()
+      val str =  optNinja.get.player.name + " " + optNinja.get.weapon.toString()
       str
     }
   }
+
+  def exists(): Boolean = optNinja.isDefined
+  def getNinja(): Ninja = optNinja.get
 }

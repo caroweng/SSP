@@ -4,15 +4,15 @@ import org.scalatest.{Matchers, WordSpec}
 
 class FieldSpec extends WordSpec with Matchers {
   "A field" when {
-    val player1 = Player("helen", Turn.pause, false)
-    val player2 = Player("caro", Turn.go, false)
+    val player1 = Player("helen", Turn.pause)
+    val player2 = Player("caro", Turn.go)
     val field = Field(Array.ofDim[Cell](3, 3))
     var desk = Desk(field, player1, player2)
     desk = desk.setNewGame()
 
     "a ninja gets removed" should {
-      val n1 = desk.field.matrix(0)(2).ninja.get
-      val n2 = desk.field.matrix(2)(2).ninja.get
+      val n1 = desk.field.matrix(0)(2).optNinja.get
+      val n2 = desk.field.matrix(2)(2).optNinja.get
       val m = desk.copy(field = desk.field.-(n1, desk.field.getPosition(n1)))
       "have one ninja less" in {
         m.field.matrix(0, 2) should be(Cell(None))
@@ -20,8 +20,8 @@ class FieldSpec extends WordSpec with Matchers {
       }
     }
     "a ninja gets added" should {
-      val n1 = desk.field.matrix(0)(2).ninja.get
-      val n2 = desk.field.matrix(2)(2).ninja.get
+      val n1 = desk.field.matrix(0)(2).optNinja.get
+      val n2 = desk.field.matrix(2)(2).optNinja.get
       val m2 = desk.copy(field = field + (n1, (1, 2)))
       "have one more" in {
         m2.field.matrix(1, 2) should be(Cell(Some(n1)))
@@ -29,17 +29,17 @@ class FieldSpec extends WordSpec with Matchers {
       }
     }
     "a ninja moves" should {
-      val n1 = desk.field.matrix(0)(2).ninja.get
-      val n2 = desk.field.matrix(2)(2).ninja.get
+      val n1 = desk.field.matrix(0)(2).optNinja.get
+      val n2 = desk.field.matrix(2)(2).optNinja.get
       val newField = desk.field.move(n1, Direction.down)
       val newField2 = newField.move(n2, Direction.up)
       "be at new posiotion" in {
-        newField.matrix(1,2).ninja should be(Some(n1))
-        newField.matrix(0,2).ninja should be(None)
+        newField.matrix(1,2).optNinja should be(Some(n1))
+        newField.matrix(0,2).optNinja should be(None)
       }
       "fight another ninja" in {
-        newField2.matrix(0,2).ninja should be(None)
-        newField2.matrix(2,2).ninja should be (None)
+        newField2.matrix(0,2).optNinja should be(None)
+        newField2.matrix(2,2).optNinja should be (None)
       }
     }
     "a ninja fights another ninja" should {

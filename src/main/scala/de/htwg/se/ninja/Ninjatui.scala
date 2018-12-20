@@ -8,8 +8,8 @@ import scala.io.StdIn.readLine
 
 object Ninjatui {
 
-  var player1 = Player("Spieler1", Turn.go, false)
-  var player2 = Player("Spieler2", Turn.pause, false)
+  var player1 = Player("Spieler1", Turn.go)
+  var player2 = Player("Spieler2", Turn.pause)
   var field = Field(Array.ofDim[Cell](6,6))
 
   val controller = new Controller(Desk(field, player1, player2).setNewGame())
