@@ -39,14 +39,35 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
 
   override def toString: String = {
     val rows = this.field.matrix.length
-    val line =("|" + "  " )*rows + "|\n"
-    var box = "\n" + (line * rows)
+    val lineseparator = "+" + ("----+") * rows + "\n"//("+-" + ("--" * rows)) * rows + "+\n"
+    val line =("|" + "   " )*rows + "|\n"
+    //var box = "\n" + (line * rows)
+    var box = "\n" + (lineseparator + line ) * rows + lineseparator
 
     for {i <- this.field.matrix.indices
          j <- this.field.matrix.indices}
-        box = box.replaceFirst("  ",  this.field.matrix(i,j).toString)
+        box = box.replaceFirst("   ",  this.toString(i, j))
     box
   }
+
+  def toString(row: Int, col: Int): String ={
+    var str: String = ""
+    val cell = this.field.matrix(row, col)
+    if(cell.optNinja.isEmpty) {
+      str = "[  ]"
+      str
+    } else {
+      val ninja = cell.getNinja()
+      if(ninja.player == this.player1) str = " 1"  else str = " 2"
+      ninja.weapon match {
+        case Weapon.flag => str.concat("f ")
+        case Weapon.stone => str.concat("r ")
+        case Weapon.paper => str.concat("p ")
+        case Weapon.scissors => str.concat("s ")
+      }
+    }
+  }
+
 
 
   def setFlag(player: Player, row : Int , col : Int): Desk = {
@@ -59,7 +80,7 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
 
   def win(row: Int, col: Int, d: direction): Boolean = {
     val n1 = this.field.matrix(this.field.add((row,col), Direction.getDirectionIndex(d))).optNinja.getOrElse(return  false)
-    if(n1.weapon == Weapon.flag) true else false
+    if(n1.weapon == Weapon.flag && n1.player != field.matrix(row, col).getNinja().player) true else false
   }
 
   def changeTurns(): Desk = {

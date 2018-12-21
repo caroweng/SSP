@@ -10,7 +10,7 @@ class Controller(var desk: Desk) extends Observable {
 
   def wonOrTurn(input: String) = {
     var dir: Direction.direction = null
-    input.split(" ")(2) match {
+    input.split(" ")(3) match {
       case "down" => dir = Direction.down
       case "up" => dir = Direction.up
       case "left" => dir = Direction.left
@@ -47,7 +47,7 @@ class Controller(var desk: Desk) extends Observable {
         switchState(State.SET_FLAG2)
         return
       }
-      switchState(State.No_NINJA_OR_NOT_YOUR)
+      switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.SET_FLAG1)
     } else if (state == State.SET_FLAG2) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player2, row, col)) {
@@ -55,7 +55,7 @@ class Controller(var desk: Desk) extends Observable {
         switchState(State.TURN)
         return
       }
-      switchState(State.No_NINJA_OR_NOT_YOUR)
+      switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.SET_FLAG2)
     }
 
@@ -70,9 +70,11 @@ class Controller(var desk: Desk) extends Observable {
 
 
   def walk(row: Int, col: Int, d: Direction.direction): Unit = {
-    if (!desk.field.matrix(row, col).exists()) {
-      switchState(State.No_NINJA_OR_NOT_YOUR)
+    val ninja = desk.field.matrix(row, col)
+    if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().player != currentPlayer) {
+      switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.TURN)
+      return
     }
     if (desk.field.exists(desk.field.matrix(row, col).getNinja(), d)) {
       desk = desk.walk(currentPlayer, desk.field.matrix(row, col).getNinja(), d)

@@ -29,8 +29,7 @@ case class Field(matrix: Array[Array[Cell]]) {
     matrix(newpos).optNinja match {
       case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
 
-      case Some(n2) => if(n2.player == n1.player) throw new IllegalArgumentException
-                          this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
+      case Some(n2) => this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
 
     }
   }
@@ -58,7 +57,10 @@ case class Field(matrix: Array[Array[Cell]]) {
     }
   }
 
-  def exists(ninja: Ninja, direction: Direction.direction): Boolean = inBounds(add(getPosition(ninja), Direction.getDirectionIndex(direction)))
+  def exists(ninja: Ninja, direction: Direction.direction): Boolean = {
+    val add1: (Int, Int) = add(getPosition(ninja), Direction.getDirectionIndex(direction))
+    if (inBounds(add1) && (matrix(add1).exists() && matrix(add1).getNinja().player != ninja.player)) true else false
+  }
 
   def add(base: (Int, Int), amount: (Int, Int)): (Int, Int) = (base._1 + amount._1, base._2 + amount._2)
 
