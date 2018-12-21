@@ -3,6 +3,7 @@ package de.htwg.se.ninja.aview
 import de.htwg.se.ninja.controller.Controller
 import de.htwg.se.ninja.util.Observer
 import de.htwg.se.ninja.controller.State
+import de.htwg.se.ninja.model.Weapon
 
 import scala.util.matching.Regex
 
@@ -50,4 +51,6 @@ class Tui(controller: Controller) extends Observer {
       case _ =>
     }
   }
+
+
 }

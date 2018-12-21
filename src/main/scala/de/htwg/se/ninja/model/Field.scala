@@ -57,9 +57,9 @@ case class Field(matrix: Array[Array[Cell]]) {
     }
   }
 
-  def exists(ninja: Ninja, direction: Direction.direction): Boolean = {
-    val add1: (Int, Int) = add(getPosition(ninja), Direction.getDirectionIndex(direction))
-    if (inBounds(add1) && (matrix(add1).exists() && matrix(add1).getNinja().player != ninja.player)) true else false
+  def exists(row: Int, col: Int, direction: Direction.direction): Boolean = {
+    val add1: (Int, Int) = add((row, col), Direction.getDirectionIndex(direction))
+    if (!inBounds(add1) || (matrix(add1).exists() && matrix(add1).getNinja().player == matrix(row, col).getNinja().player)) false else true
   }
 
   def add(base: (Int, Int), amount: (Int, Int)): (Int, Int) = (base._1 + amount._1, base._2 + amount._2)

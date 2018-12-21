@@ -52,7 +52,7 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
 
   def toString(row: Int, col: Int): String ={
     var str: String = ""
-    val cell = this.field.matrix(row, col)
+    val cell = field.matrix(row, col)
     if(cell.optNinja.isEmpty) {
       str = "[  ]"
       str
@@ -84,6 +84,9 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
   }
 
   def changeTurns(): Desk = {
-    copy(player1 = this.player1.changeTurn(player2.state), player2 = this.player2.changeTurn(player1.state))
+    val s1 = player1.state
+    val p1 = player1.changeTurn(player2.state)
+    val p2 = player2.changeTurn(s1)
+    this.copy(player1 = p1, player2 = p2)
   }
 }

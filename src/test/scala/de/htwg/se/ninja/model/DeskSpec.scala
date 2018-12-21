@@ -35,7 +35,7 @@ class DeskSpec extends WordSpec with Matchers{
       "cell in field exists" in {
         add._2 should be(3)
         inbo should be(false)
-        desk.field.exists(n1, Direction.right) should be(false)
+        desk.field.exists(pos._1, pos._2,  Direction.right) should be(false)
       }
     }
     "a ninja walks" should {

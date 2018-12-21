@@ -19,7 +19,7 @@ class Controller(var desk: Desk) extends Observable {
     val row = input.split(" ")(1).toInt
     val col = input.split(" ")(2).toInt
 
-    if (desk.win(row, col, dir)) {
+    if (desk.field.exists(row, col, dir) && desk.win(row, col, dir)) {
       switchState(State.WON)
     } else {
       walk(row, col, dir)
@@ -76,7 +76,7 @@ class Controller(var desk: Desk) extends Observable {
       switchState(State.TURN)
       return
     }
-    if (desk.field.exists(desk.field.matrix(row, col).getNinja(), d)) {
+    if (desk.field.exists(row, col, d)) {
       desk = desk.walk(currentPlayer, desk.field.matrix(row, col).getNinja(), d)
       desk = desk.changeTurns()
       switchState(State.TURN)
@@ -86,7 +86,5 @@ class Controller(var desk: Desk) extends Observable {
     }
     notifyObservers
   }
-
-
 
 }
