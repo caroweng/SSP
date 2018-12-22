@@ -41,11 +41,11 @@ class Tui(controller: Controller) extends Observer {
   override def update: Unit = {
     controller.state match {
       case State.DIRECTION_DOES_NOT_EXIST => print("In diese Richtung kannst du nicht laufen!")
-      case State.TURN => print("Jetzt kannt du laufen!")
+      case State.TURN => println(controller.currentPlayer.name+": jetzt kannt du laufen!")
                          println(controller.deskToString)
-      case State.SET_FLAG1 => print("Spieler 1 setz deine Flagge")
+      case State.SET_FLAG1 => print("Spieler 1: setz deine Flagge")
                               println(controller.deskToString)
-      case State.SET_FLAG2 => print("Spieler 2 setz deine Flagge")
+      case State.SET_FLAG2 => print("Spieler 2: setz deine Flagge")
                               println(controller.deskToString)
       case  State.No_NINJA_OR_NOT_VALID => print("Wähle einen anderen Ninja der dir gehört!")
       case _ =>

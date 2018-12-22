@@ -37,21 +37,22 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
 
 
 
-  override def toString: String = {
+  def toString(player: Player): String = {
+    //print(player1 + " und " + player2)
     val rows = this.field.matrix.length
-    print(this.player1 + "und " + this.player2)
-    val lineseparator = "+" + ("----+") * rows + "\n"//("+-" + ("--" * rows)) * rows + "+\n"
-    val line =("|" + "   " )*rows + "|\n"
-    //var box = "\n" + (line * rows)
-    var box = "\n" + (lineseparator + line ) * rows + lineseparator
+    val lineseparator = "  +" + ("----+") * rows + "\n"
+    val line =(" |" + "   " )*rows + " |\n"
+    var box = "\nrow 0  | 1  | 2  | 3  | 4  | 5" + "\n" + ( lineseparator + "n" +line ) * rows + lineseparator
 
-    for {i <- this.field.matrix.indices
-         j <- this.field.matrix.indices}
-        box = box.replaceFirst("   ",  this.toString(i, j) + i + j)
+    for (i <- this.field.matrix.indices) {
+      box = box.replaceFirst("n", i.toString)
+      for (j <- this.field.matrix.indices)
+        box = box.replaceFirst("    ", this.toString(player, i, j))
+    }
     box
   }
 
-  def toString(row: Int, col: Int): String ={
+  def toString(curPlayer: Player, row: Int, col: Int): String ={
     var str: String = ""
     val cell = field.matrix(row, col)
     if(cell.optNinja.isEmpty) {
@@ -59,18 +60,20 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
       str
     } else {
       val ninja = cell.getNinja()
-      print(ninja.player)
-      if(ninja.player.name == this.player1.name) str = " 1"  else str = " 2"
-      ninja.weapon match {
-        case Weapon.flag => str.concat("f ")
-        case Weapon.stone => str.concat("r ")
-        case Weapon.paper => str.concat("p ")
-        case Weapon.scissors => str.concat("s ")
+      if(ninja.player.name == curPlayer.name) {
+        if (ninja.player.name == this.player1.name) str = " 1" else str = " 2"
+          ninja.weapon match {
+            case Weapon.flag => str.concat("f ")
+            case Weapon.stone => str.concat("r ")
+            case Weapon.paper => str.concat("p ")
+            case Weapon.scissors => str.concat("s ")
+          }
+      } else {
+        str = " xx "
+        str
       }
     }
   }
-
-
 
   def setFlag(player: Player, row : Int , col : Int): Desk = {
     val d2 = this.field

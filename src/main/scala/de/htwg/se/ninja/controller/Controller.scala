@@ -44,6 +44,7 @@ class Controller(var desk: Desk) extends Observable {
     if (state == State.SET_FLAG1) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player1, row, col)) {
         desk = desk.setFlag(desk.player1, row, col)
+        desk = desk.changeTurns()
         switchState(State.SET_FLAG2)
         return
       }
@@ -52,6 +53,7 @@ class Controller(var desk: Desk) extends Observable {
     } else if (state == State.SET_FLAG2) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player2, row, col)) {
         desk = desk.setFlag(desk.player2, row, col)
+        desk = desk.changeTurns()
         switchState(State.TURN)
         return
       }
@@ -61,7 +63,7 @@ class Controller(var desk: Desk) extends Observable {
 
   }
 
-  def deskToString: String = desk.toString
+  def deskToString: String = desk.toString(currentPlayer)
 
   def switchState(newState: State.state): Unit = {
     state = newState
@@ -85,7 +87,7 @@ class Controller(var desk: Desk) extends Observable {
       switchState(State.DIRECTION_DOES_NOT_EXIST)
       switchState(State.TURN)
     }
-    notifyObservers
+    //notifyObservers
   }
 
 }
