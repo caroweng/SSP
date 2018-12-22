@@ -33,7 +33,7 @@ class Tui(controller: Controller) extends Observer {
       case State.SET_FLAG2 => flagInput(input)
       case State.TURN => turnInput(input)
       case State.WON =>
-        print(controller.currentPlayer+" hat gewonnen!!")
+        print(controller.currentPlayer.name +" hat gewonnen!!")
         System.exit(0)
     }
   }

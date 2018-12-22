@@ -71,9 +71,10 @@ class Controller(var desk: Desk) extends Observable {
 
   def walk(row: Int, col: Int, d: Direction.direction): Unit = {
     val ninja = desk.field.matrix(row, col)
-    if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().player != currentPlayer) {
+    if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().player.name != currentPlayer.name) {
       switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.TURN)
+      //notifyObservers ????
       return
     }
     if (desk.field.exists(row, col, d)) {

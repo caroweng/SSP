@@ -54,14 +54,14 @@ class DeskSpec extends WordSpec with Matchers{
       }
     }
 
-    "a ninja" should{
+    /*"a ninja" should{
       val n3 = desk.field.matrix(2)(1).optNinja.get
       val d4 = desk.setFlag(playerH, 2,0 )
       "wins" in {
         d4.field.matrix(2)(1).optNinja should be(Some(n3))
         d4.win(d4.field.getPosition(n3)_1 , d4.field.getPosition(n3)_2, Direction.left) should be (true)
       }
-    }
+    }*/
 
     "a Player" should{
       val einDesk = desk.changeTurns()
@@ -72,6 +72,8 @@ class DeskSpec extends WordSpec with Matchers{
       "change turn" in {
         einDesk.player1.state should be(Turn.go)
         einDesk.player2.state should be(Turn.pause)
+        print(desk.toString())
+        print(einDesk.toString())
       }
     }
 //    "a Player" should {

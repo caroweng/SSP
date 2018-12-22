@@ -14,7 +14,7 @@ case class Field(matrix: Array[Array[Cell]]) {
   }
 
   def isNinjaOfPlayerAtPosition(player: Player, row: Int, col: Int): Boolean = {
-    if (matrix(row)(col).exists() && matrix(row, col).getNinja().player == player) {
+    if (matrix(row)(col).exists() && matrix(row, col).getNinja().player.name == player.name) {
       return true
     }
     false

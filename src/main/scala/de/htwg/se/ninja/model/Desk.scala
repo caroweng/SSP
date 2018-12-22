@@ -39,6 +39,7 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
 
   override def toString: String = {
     val rows = this.field.matrix.length
+    print(this.player1 + "und " + this.player2)
     val lineseparator = "+" + ("----+") * rows + "\n"//("+-" + ("--" * rows)) * rows + "+\n"
     val line =("|" + "   " )*rows + "|\n"
     //var box = "\n" + (line * rows)
@@ -46,7 +47,7 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
 
     for {i <- this.field.matrix.indices
          j <- this.field.matrix.indices}
-        box = box.replaceFirst("   ",  this.toString(i, j))
+        box = box.replaceFirst("   ",  this.toString(i, j) + i + j)
     box
   }
 
@@ -58,7 +59,8 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
       str
     } else {
       val ninja = cell.getNinja()
-      if(ninja.player == this.player1) str = " 1"  else str = " 2"
+      print(ninja.player)
+      if(ninja.player.name == this.player1.name) str = " 1"  else str = " 2"
       ninja.weapon match {
         case Weapon.flag => str.concat("f ")
         case Weapon.stone => str.concat("r ")
@@ -88,5 +90,6 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
     val p1 = player1.changeTurn(player2.state)
     val p2 = player2.changeTurn(s1)
     this.copy(player1 = p1, player2 = p2)
+
   }
 }
