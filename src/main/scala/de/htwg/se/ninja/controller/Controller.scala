@@ -1,12 +1,12 @@
 package de.htwg.se.ninja.controller
 
-import java.util.NoSuchElementException
-
 import de.htwg.se.ninja.model._
-import de.htwg.se.ninja.util.Observable
+import de.htwg.se.ninja.util.{Observable, UndoManager}
 
 class Controller(var desk: Desk) extends Observable {
   var state: State.state = State.SET_FLAG1
+  private val undoManager = new UndoManager
+
 
   def wonOrTurn(input: String) = {
     var dir: Direction.direction = null
@@ -24,7 +24,6 @@ class Controller(var desk: Desk) extends Observable {
     } else {
       walk(row, col, dir)
     }
-
   }
 
 
@@ -43,7 +42,8 @@ class Controller(var desk: Desk) extends Observable {
   def setFlag(row: Int, col: Int): Unit = {
     if (state == State.SET_FLAG1) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player1, row, col)) {
-        desk = desk.setFlag(desk.player1, row, col)
+        undoManager.doStep(new setFlagCommand(row, col, currentPlayer, this))
+//        desk = desk.setFlag(desk.player1, row, col)
         desk = desk.changeTurns()
         switchState(State.SET_FLAG2)
         return
@@ -52,7 +52,8 @@ class Controller(var desk: Desk) extends Observable {
       switchState(State.SET_FLAG1)
     } else if (state == State.SET_FLAG2) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player2, row, col)) {
-        desk = desk.setFlag(desk.player2, row, col)
+        undoManager.doStep(new setFlagCommand(row, col, currentPlayer, this))
+//        desk = desk.setFlag(desk.player2, row, col)
         desk = desk.changeTurns()
         switchState(State.TURN)
         return

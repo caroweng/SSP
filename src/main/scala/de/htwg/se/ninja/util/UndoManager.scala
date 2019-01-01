@@ -1,4 +1,4 @@
-package de.htwg.se.sudoku.util
+package de.htwg.se.ninja.util
 
 class UndoManager {
   private var undoStack: List[Command]= Nil
@@ -7,6 +7,7 @@ class UndoManager {
     undoStack = command::undoStack
     command.doStep
   }
+
   def undoStep  = {
     undoStack match {
       case  Nil =>
@@ -17,6 +18,7 @@ class UndoManager {
       }
     }
   }
+
   def redoStep = {
     redoStack match {
       case Nil =>

@@ -1,4 +1,4 @@
-package de.htwg.se.sudoku.util
+package de.htwg.se.ninja.util
 
 trait Command {
 
