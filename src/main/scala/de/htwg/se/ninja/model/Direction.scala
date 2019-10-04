@@ -12,5 +12,4 @@ object Direction extends Enumeration {
       case Direction.down => (1,0)
     }
   }
-
 }

@@ -1,7 +1,5 @@
 package de.htwg.se.ninja.controller
 
-import java.util.NoSuchElementException
-
 import de.htwg.se.ninja.model._
 import de.htwg.se.ninja.util.Observable
 
@@ -16,17 +14,15 @@ class Controller(var desk: Desk) extends Observable {
       case "left" => dir = Direction.left
       case "right" => dir = Direction.right
     }
-    val row = input.split(" ")(1).toInt
-    val col = input.split(" ")(2).toInt
+    val row: Int = input.split(" ")(1).toInt
+    val col: Int = input.split(" ")(2).toInt
 
     if (desk.field.exists(row, col, dir) && desk.win(row, col, dir)) {
       switchState(State.WON)
     } else {
       walk(row, col, dir)
     }
-
   }
-
 
   def newDesk(player1: Player, player2: Player, field: Field): Unit = {
     desk = Desk(field, player2, player1)
@@ -60,7 +56,6 @@ class Controller(var desk: Desk) extends Observable {
       switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.SET_FLAG2)
     }
-
   }
 
   def deskToString: String = desk.toString(currentPlayer)
@@ -69,7 +64,6 @@ class Controller(var desk: Desk) extends Observable {
     state = newState
     notifyObservers
   }
-
 
   def walk(row: Int, col: Int, d: Direction.direction): Unit = {
     val ninja = desk.field.matrix(row, col)
@@ -89,5 +83,4 @@ class Controller(var desk: Desk) extends Observable {
     }
     //notifyObservers
   }
-
 }

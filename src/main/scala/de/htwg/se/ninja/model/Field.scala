@@ -20,17 +20,14 @@ case class Field(matrix: Array[Array[Cell]]) {
     false
   }
 
-
   def move(n1: Ninja, direction: Direction.direction): Field = {
     if(n1.weapon == Weapon.flag) throw new IllegalStateException()
 
-    val pos = getPosition(n1)
-    val newpos = add(pos, Direction.getDirectionIndex(direction))
+    val pos: (Int, Int) = getPosition(n1)
+    val newpos: (Int, Int) = add(pos, Direction.getDirectionIndex(direction))
     matrix(newpos).optNinja match {
       case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
-
       case Some(n2) => this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
-
     }
   }
 
@@ -40,7 +37,7 @@ case class Field(matrix: Array[Array[Cell]]) {
 
   def fight(n1: Ninja, n2: Ninja): Ninja = {
     if(n1.weapon == n2.weapon) {
-      val newN = n1.copy(weapon = Weapon.randWeapon())
+      val newN: Ninja = n1.copy(weapon = Weapon.randWeapon())
       if(weaponWeight(newN.weapon, n2.weapon)) return newN else return n2
     }
     if(weaponWeight(n1.weapon, n2.weapon)) n1 else n2
