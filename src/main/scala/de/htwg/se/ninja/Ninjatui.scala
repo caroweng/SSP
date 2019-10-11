@@ -1,15 +1,15 @@
 package de.htwg.se.ninja
 
 import de.htwg.se.ninja.model._
-import de.htwg.se.ninja.aview.Tui
+import de.htwg.se.ninja.view.Tui
 import de.htwg.se.ninja.controller.Controller
 
 import scala.io.StdIn.readLine
 
 object Ninjatui {
 
-  var player1 = Player("Spieler1", Turn.go)
-  var player2 = Player("Spieler2", Turn.pause)
+  var player1 = Player("Spieler1", StateOfPlayer.go)
+  var player2 = Player("Spieler2", StateOfPlayer.pause)
   var field = Field(Array.ofDim[Cell](6,6))
 
   val controller = new Controller(Desk(field, player1, player2).setNewGame())

@@ -4,8 +4,8 @@ import org.scalatest.{Matchers, WordSpec}
 
 class DeskSpec extends WordSpec with Matchers{
   "A desk" when {
-    val playerC = Player("helen", Turn.pause)
-    val playerH = Player("caro", Turn.go)
+    val playerC = Player("helen", StateOfPlayer.pause)
+    val playerH = Player("caro", StateOfPlayer.go)
     val desk = Desk(Field(Array.ofDim[Cell](3, 3)), playerC, playerH)
     "new game set" should {
       desk.setNewGame()
@@ -15,7 +15,6 @@ class DeskSpec extends WordSpec with Matchers{
       "have a ninja" in {
         val n1 = desk.field.matrix(0)(2).optNinja.get
         desk.field.matrix(0,2) should be (Cell(Some(n1)))
-        desk.field.matrix(0)(2).optNinja.get.id should be(2)
       }
     }
     "position of a ninja" should {
@@ -66,12 +65,12 @@ class DeskSpec extends WordSpec with Matchers{
     "a Player" should{
       val einDesk = desk.changeTurns()
       "have a turn" in {
-        desk.player1.state should be (Turn.pause)
-        desk.player2.state should be (Turn.go)
+        desk.player1.state should be (StateOfPlayer.pause)
+        desk.player2.state should be (StateOfPlayer.go)
       }
       "change turn" in {
-        einDesk.player1.state should be(Turn.go)
-        einDesk.player2.state should be(Turn.pause)
+        einDesk.player1.state should be(StateOfPlayer.go)
+        einDesk.player2.state should be(StateOfPlayer.pause)
         print(desk.toString())
         print(einDesk.toString())
       }

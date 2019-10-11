@@ -1,28 +1,17 @@
 package de.htwg.se.ninja.model
 
-import scala.util.Random
-
 object Weapon extends Enumeration {
-  type weapon = Value
-  val scissors, stone, paper, flag = Value
+    type weapon = Value
+    val scissors: Weapon.Value = Value("s")
+    val rock: Weapon.Value = Value("r")
+    val paper: Weapon.Value = Value("p")
+    val flag: Weapon.Value = Value("f")
 
-  def randWeapon(): Weapon.weapon = {
-    val r: Random = new Random()
-    val n: Int = r.nextInt(3)
-//    val t = System.currentTimeMillis()
-//    val r =  t % 3
-    n match {
-      case 0 => Weapon.scissors
-      case 1 => Weapon.stone
-      case 2 => Weapon.paper
+    def createWeapon(number: Int): Weapon.weapon = {
+        number match {
+            case 0 => Weapon.scissors
+            case 1 => Weapon.rock
+            case 2 => Weapon.paper
+        }
     }
-  }
-
-  override def toString: String = {
-    this match {
-      case Weapon.scissors => "s"
-      case Weapon.paper => "p"
-      case Weapon.stone => "r"
-    }
-  }
 }

@@ -34,7 +34,7 @@ class Controller(var desk: Desk) extends Observable {
     notifyObservers
   }
 
-  def currentPlayer : Player = if (desk.player1.state == Turn.go) desk.player1 else desk.player2
+  def currentPlayer : Player = if (desk.player1.state == StateOfPlayer.go) desk.player1 else desk.player2
 
   def setFlag(row: Int, col: Int): Unit = {
     if (state == State.SET_FLAG1) {

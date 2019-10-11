@@ -1,4 +1,4 @@
-package de.htwg.se.ninja.aview
+package de.htwg.se.ninja.view
 
 import de.htwg.se.ninja.controller.Controller
 import de.htwg.se.ninja.util.Observer

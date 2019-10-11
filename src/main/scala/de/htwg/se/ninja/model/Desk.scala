@@ -2,6 +2,8 @@ package de.htwg.se.ninja.model
 
 import Direction.direction
 
+import scala.util.Random
+
 case class Desk(field: Field, player1 : Player, player2: Player) {
 
   def setNewGame(): Desk = this.copy(field = setNinjas(setEmpty(field)))
@@ -15,25 +17,26 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
   }
 
   def setNinjas(field: Field): Field = {
-    var n, m = 0
     val field2: Field = Field(field.matrix)
-    for {r <- 0 until this.ninjaRows(field)
-         c <- field.matrix.indices} {
-      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.randWeapon(), player1, n)))
-      n += 1
-    }
-    for {r <- field.matrix.length - this.ninjaRows(field) until field.matrix.length
-         c <- field.matrix.indices} {
-      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.randWeapon(), player2, m)))
-      m += 1
-    }
+//    for {r <- 0 until this.ninjaRows(field)
+//         c <- field.matrix.indices} {
+//        val r: Random = new Random()
+//            val n: Int = r.nextInt(3)
+//      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.createWeapon(n), player1)))
+//    }
+//    for {r <- field.matrix.length - this.ninjaRows(field) until field.matrix.length
+//         c <- field.matrix.indices} {
+//        val r: Random = new Random()
+//            val n: Int = r.nextInt(3)
+//      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.createWeapon(n), player2)))
+//    }
     field.copy(matrix = field2.matrix)
   }
 
   def ninjaRows(field: Field): Int = if (field.matrix.length / 3 < 2) 1 else 2
 
   def walk(player: Player, ninja: Ninja, direction: direction): Desk = this.copy(field = field.move(ninja, direction))
-  
+
   def toString(player: Player): String = {
     //print(player1 + " und " + player2)
     val rows: Int= this.field.matrix.length
@@ -61,7 +64,7 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
         if (ninja.player.name == this.player1.name) str = " 1" else str = " 2"
           ninja.weapon match {
             case Weapon.flag => str.concat("f ")
-            case Weapon.stone => str.concat("r ")
+            case Weapon.`rock` => str.concat("r ")
             case Weapon.paper => str.concat("p ")
             case Weapon.scissors => str.concat("s ")
           }
@@ -76,7 +79,7 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
     val d2: Field = this.field
     val ninja: Ninja = this.field.matrix(row)(col).getNinja()
 
-    d2.matrix(row)(col) = Cell(Some(Ninja(Weapon.flag, ninja.player, ninja.id)))
+    d2.matrix(row)(col) = Cell(Some(Ninja(Weapon.flag, ninja.player)))
     copy(field = d2)
   }
 
@@ -86,9 +89,9 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
   }
 
   def changeTurns(): Desk = {
-    val s1: Turn.turn = player1.state
-    val p1: Player = player1.changeTurn(player2.state)
-    val p2: Player = player2.changeTurn(s1)
+    val s1: StateOfPlayer.stateOfPlayer = player1.state
+    val p1: Player = player1.changeState(player2.state)
+    val p2: Player = player2.changeState(s1)
     this.copy(player1 = p1, player2 = p2)
   }
 }
