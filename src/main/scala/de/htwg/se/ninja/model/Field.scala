@@ -4,7 +4,32 @@ import scala.util.Random
 
 case class Field(matrix: Array[Array[Cell]]) {
 
-    def matrix(tupel: (Int, Int)): Cell = matrix(tupel._1)(tupel._2)
+    def getCellAtPosition(tupel: (Int, Int)): Cell = matrix(tupel._1)(tupel._2)
+
+    def setEmpty(field: Field): Field = {
+        val field2: Field = Field(field.matrix)
+        for {i <- field.matrix.indices
+             j <- field.matrix.indices}
+            field2.matrix(i)(j) = Cell(None)
+        field.copy(matrix = field2.matrix)
+    }
+
+    def setNinjas(field: Field): Field = {
+        val field2: Field = Field(field.matrix)
+        //    for {r <- 0 until this.ninjaRows(field)
+        //         c <- field.matrix.indices} {
+        //        val r: Random = new Random()
+        //            val n: Int = r.nextInt(3)
+        //      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.createWeapon(n), player1)))
+        //    }
+        //    for {r <- field.matrix.length - this.ninjaRows(field) until field.matrix.length
+        //         c <- field.matrix.indices} {
+        //        val r: Random = new Random()
+        //            val n: Int = r.nextInt(3)
+        //      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.createWeapon(n), player2)))
+        //    }
+        field.copy(matrix = field2.matrix)
+    }
 
     def getPosition(n1: Ninja): (Int, Int) = {
         for(r <- matrix.indices)
@@ -16,7 +41,7 @@ case class Field(matrix: Array[Array[Cell]]) {
     }
 
     def isNinjaOfPlayerAtPosition(player: Player, row: Int, col: Int): Boolean = {
-        if (inBounds(row, col) && matrix(row)(col).exists() && matrix(row, col).getNinja().player.name == player.name) {
+        if (inBounds(row, col) && matrix(row)(col).exists() && getCellAtPosition(row, col).getNinja().player.name == player.name) {
             return true
         }
         false
@@ -27,7 +52,7 @@ case class Field(matrix: Array[Array[Cell]]) {
 
         val pos: (Int, Int) = getPosition(n1)
         val newpos: (Int, Int) = add(pos, Direction.getDirectionIndex(direction))
-        matrix(newpos).optNinja match {
+        getCellAtPosition(newpos).optNinja match {
             case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
             case Some(n2) => this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
         }
@@ -60,7 +85,7 @@ case class Field(matrix: Array[Array[Cell]]) {
 
     def exists(row: Int, col: Int, direction: Direction.direction): Boolean = {
         val add1: (Int, Int) = add((row, col), Direction.getDirectionIndex(direction))
-        if (!inBounds(add1) || (matrix(add1).exists() && matrix(add1).getNinja().player == matrix(row, col).getNinja().player)) false else true
+        if (!inBounds(add1) || (getCellAtPosition(add1).exists() && getCellAtPosition(add1).getNinja().player == getCellAtPosition(row, col).getNinja().player)) false else true
     }
 
     def add(base: (Int, Int), amount: (Int, Int)): (Int, Int) = (base._1 + amount._1, base._2 + amount._2)
