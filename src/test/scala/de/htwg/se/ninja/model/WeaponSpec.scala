@@ -8,6 +8,12 @@ class WeaponSpec extends WordSpec with Matchers {
         val weapon1 = Weapon.createWeapon(1)
         val weapon2 = Weapon.createWeapon(2)
         val weapon3 = Weapon.flag
+        val weapon5 = Weapon
+
+        "be a weapon" in {
+            weapon5 should be(Weapon)
+        }
+
         "be constructed as" in {
             weapon0 should be(Weapon.scissors)
             weapon1 should be(Weapon.rock)

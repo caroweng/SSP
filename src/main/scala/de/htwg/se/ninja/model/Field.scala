@@ -6,55 +6,75 @@ case class Field(matrix: Array[Array[Cell]]) {
 
     def getCellAtPosition(tupel: (Int, Int)): Cell = matrix(tupel._1)(tupel._2)
 
-    def setEmpty(field: Field): Field = {
-        val field2: Field = Field(field.matrix)
-        for {i <- field.matrix.indices
-             j <- field.matrix.indices}
-            field2.matrix(i)(j) = Cell(None)
-        field.copy(matrix = field2.matrix)
+    def setNewField(): Field = {
+        setEmpty()
+        setInitialNinjaRows()
     }
 
-    def setNinjas(field: Field): Field = {
-        val field2: Field = Field(field.matrix)
-        //    for {r <- 0 until this.ninjaRows(field)
-        //         c <- field.matrix.indices} {
-        //        val r: Random = new Random()
-        //            val n: Int = r.nextInt(3)
-        //      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.createWeapon(n), player1)))
-        //    }
-        //    for {r <- field.matrix.length - this.ninjaRows(field) until field.matrix.length
-        //         c <- field.matrix.indices} {
-        //        val r: Random = new Random()
-        //            val n: Int = r.nextInt(3)
-        //      field2.matrix(r)(c) = Cell(Some(Ninja(Weapon.createWeapon(n), player2)))
-        //    }
-        field.copy(matrix = field2.matrix)
+    def setEmpty(): Field = {
+        val newMatrix: Array[Array[Cell]] = Array.ofDim[Cell](matrix.length, matrix.length)
+        for {i <- newMatrix.indices
+             j <- newMatrix.indices} {
+            newMatrix(i)(j) = Cell(None)
+        }
+        this.copy(matrix = newMatrix)
     }
+
+    def setInitialNinjaRows(): Field = {
+        val newMatrix: Array[Array[Cell]] = Array.ofDim[Cell](this.matrix.length, this.matrix.length)
+            for {row <- 0 until this.getAmountOfNinjaRows()
+                 col <- this.matrix.indices} {
+                val r: Random = new Random()
+                val n: Int = r.nextInt(3)
+                newMatrix(row)(col) = Cell(Some(Ninja(Weapon.createWeapon(n), 1)))
+            }
+            for {row <- this.matrix.length - this.getAmountOfNinjaRows() until this.matrix.length
+                 col <- this.matrix.indices} {
+                val r: Random = new Random()
+                val n: Int = r.nextInt(3)
+                newMatrix(row)(col) = Cell(Some(Ninja(Weapon.createWeapon(n), 2)))
+            }
+        this.copy(matrix = newMatrix)
+    }
+
+    def setFlag(player: Int, row : Int , col : Int): Field = {
+        val newMatrix: Array[Array[Cell]] = Array.ofDim[Cell](this.matrix.length, this.matrix.length)
+        val ninja: Ninja = this.matrix(row)(col).getNinja()
+
+        newMatrix(row)(col) = Cell(Some(Ninja(Weapon.flag, ninja.playerId)))
+        copy(matrix = newMatrix)
+    }
+
+    def getAmountOfNinjaRows(): Int = if (this.matrix.length / 3 < 2) 1 else 2
 
     def getPosition(n1: Ninja): (Int, Int) = {
         for(r <- matrix.indices)
             for(c <- matrix.indices)
-                if (matrix(r)(c).optNinja.getOrElse("kein Ninja") == Ninja(n1.weapon, n1.player))
+                if (matrix(r)(c).optNinja.getOrElse("kein Ninja") == Ninja(n1.weapon, n1.playerId))
                     return (r, c)
 
         throw new NoSuchElementException()
     }
 
     def isNinjaOfPlayerAtPosition(player: Player, row: Int, col: Int): Boolean = {
-        if (inBounds(row, col) && matrix(row)(col).exists() && getCellAtPosition(row, col).getNinja().player.name == player.name) {
+        if (inBounds(row, col) && matrix(row)(col).exists() && getCellAtPosition(row, col).getNinja().playerId == player.id) {
             return true
         }
         false
     }
 
-    def move(n1: Ninja, direction: Direction.direction): Field = {
+    def checkWalk(n1: Ninja, direction: Direction.direction): Field = {
         if(n1.weapon == Weapon.flag) throw new IllegalStateException()
 
         val pos: (Int, Int) = getPosition(n1)
         val newpos: (Int, Int) = add(pos, Direction.getDirectionIndex(direction))
+        walkNinja(n1, newpos)
+    }
+
+    def walkNinja(ninja: Ninja, newpos: (Int, Int)): Field = {
         getCellAtPosition(newpos).optNinja match {
-            case None =>  this.-(n1, getPosition(n1)).+(n1, newpos)
-            case Some(n2) => this.-(n1, getPosition(n1)).+(fight(n1, n2), newpos)
+            case None =>  this.-(ninja, getPosition(ninja)).+(ninja, newpos)
+            case Some(n2) => this.-(ninja, getPosition(ninja)).+(fight(ninja, n2), newpos)
         }
     }
 
@@ -63,7 +83,7 @@ case class Field(matrix: Array[Array[Cell]]) {
     def +(ninja: Ninja, pos: (Int,Int)): Field = copy(matrix.updated(pos._1, matrix(pos._1).updated(pos._2, Cell(Some(ninja)))))
 
     def fight(n1: Ninja, n2: Ninja): Ninja = {
-        if(n1.weapon == n2.weapon) {
+        if(n1.weapon == n2.weapon) { //???? wenn Waffen gleich Spieler neue wählen lassen
             val r: Random = new Random()
             val n: Int = r.nextInt(3)
             val newN: Ninja = n1.copy(weapon = Weapon.createWeapon(n))
@@ -74,7 +94,7 @@ case class Field(matrix: Array[Array[Cell]]) {
 
     def weaponWeight(w1: Weapon.weapon, w2: Weapon.weapon) : Boolean = {
         w1 match {
-            case Weapon.`rock` =>
+            case Weapon.rock =>
                 if (w2 == Weapon.paper) false else true
             case Weapon.scissors =>
                 if (w2 == Weapon.rock) false else true
@@ -83,9 +103,9 @@ case class Field(matrix: Array[Array[Cell]]) {
         }
     }
 
-    def exists(row: Int, col: Int, direction: Direction.direction): Boolean = {
+    def cellExists(row: Int, col: Int, direction: Direction.direction): Boolean = {
         val add1: (Int, Int) = add((row, col), Direction.getDirectionIndex(direction))
-        if (!inBounds(add1) || (getCellAtPosition(add1).exists() && getCellAtPosition(add1).getNinja().player == getCellAtPosition(row, col).getNinja().player)) false else true
+        if (!inBounds(add1) || (getCellAtPosition(add1).exists() && getCellAtPosition(add1).getNinja().playerId == getCellAtPosition(row, col).getNinja().playerId)) false else true
     }
 
     def add(base: (Int, Int), amount: (Int, Int)): (Int, Int) = (base._1 + amount._1, base._2 + amount._2)

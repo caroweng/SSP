@@ -17,7 +17,7 @@ class Controller(var desk: Desk) extends Observable {
     val row: Int = input.split(" ")(1).toInt
     val col: Int = input.split(" ")(2).toInt
 
-    if (desk.field.exists(row, col, dir) && desk.win(row, col, dir)) {
+    if (desk.field.cellExists(row, col, dir) && desk.win(row, col, dir)) {
       switchState(State.WON)
     } else {
       walk(row, col, dir)
@@ -39,7 +39,7 @@ class Controller(var desk: Desk) extends Observable {
   def setFlag(row: Int, col: Int): Unit = {
     if (state == State.SET_FLAG1) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player1, row, col)) {
-        desk = desk.setFlag(desk.player1, row, col)
+        desk.copy(field = desk.field.setFlag(desk.player1.id, row, col))
         desk = desk.changeTurns()
         switchState(State.SET_FLAG2)
         return
@@ -48,7 +48,7 @@ class Controller(var desk: Desk) extends Observable {
       switchState(State.SET_FLAG1)
     } else if (state == State.SET_FLAG2) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player2, row, col)) {
-        desk = desk.setFlag(desk.player2, row, col)
+        desk.copy(field = desk.field.setFlag(desk.player2.id, row, col))
         desk = desk.changeTurns()
         switchState(State.TURN)
         return
@@ -67,14 +67,14 @@ class Controller(var desk: Desk) extends Observable {
 
   def walk(row: Int, col: Int, d: Direction.direction): Unit = {
     val ninja = desk.field.getCellAtPosition(row, col)
-    if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().player.name != currentPlayer.name) {
+    if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != currentPlayer.id) {
       switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.TURN)
       //notifyObservers ????
       return
     }
-    if (desk.field.exists(row, col, d)) {
-      desk = desk.walk(currentPlayer, desk.field.getCellAtPosition(row, col).getNinja(), d)
+    if (desk.field.cellExists(row, col, d)) {
+      desk.copy(field = desk.field.checkWalk(desk.field.getCellAtPosition(row, col).getNinja(), d))
       desk = desk.changeTurns()
       switchState(State.TURN)
     } else {

@@ -2,19 +2,11 @@ package de.htwg.se.ninja.model
 
 import Direction.direction
 
-import scala.util.Random
-
 case class Desk(field: Field, player1 : Player, player2: Player) {
 
-  def setNewGame(): Desk = this.copy(field = field)// falsch
-
-
-  def ninjaRows(field: Field): Int = if (field.matrix.length / 3 < 2) 1 else 2
-
-  def walk(player: Player, ninja: Ninja, direction: direction): Desk = this.copy(field = field.move(ninja, direction))
+  def setNewGame(): Desk = this.copy(field = field.setNewField())
 
   def toString(player: Player): String = {
-    //print(player1 + " und " + player2)
     val rows: Int= this.field.matrix.length
     val lineseparator: String = "  +" + ("----+") * rows + "\n"
     val line: String = (" |" + "   " )*rows + " |\n"
@@ -30,14 +22,14 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
 
   def toString(curPlayer: Player, row: Int, col: Int): String ={
     var str: String = ""
-    val cell: Cell = field.getCellAtPosition(row, col)
+    val cell: Cell = this.field.getCellAtPosition(row, col)
     if(cell.optNinja.isEmpty) {
       str = "[  ]"
       str
     } else {
       val ninja: Ninja = cell.getNinja()
-      if(ninja.player.name == curPlayer.name) {
-        if (ninja.player.name == this.player1.name) str = " 1" else str = " 2"
+      if(ninja.playerId == curPlayer.id) {
+        if (ninja.playerId == this.player1.id) str = " 1" else str = " 2"
           ninja.weapon match {
             case Weapon.flag => str.concat("f ")
             case Weapon.`rock` => str.concat("r ")
@@ -51,17 +43,9 @@ case class Desk(field: Field, player1 : Player, player2: Player) {
     }
   }
 
-  def setFlag(player: Player, row : Int , col : Int): Desk = {
-    val d2: Field = this.field
-    val ninja: Ninja = this.field.matrix(row)(col).getNinja()
-
-    d2.matrix(row)(col) = Cell(Some(Ninja(Weapon.flag, ninja.player)))
-    copy(field = d2)
-  }
-
   def win(row: Int, col: Int, d: direction): Boolean = {
     val n1: Ninja = this.field.getCellAtPosition(this.field.add((row,col), Direction.getDirectionIndex(d))).optNinja.getOrElse(return  false)
-    if(n1.weapon == Weapon.flag && n1.player != field.getCellAtPosition(row, col).getNinja().player) true else false
+    if(n1.weapon == Weapon.flag && n1.playerId != field.getCellAtPosition(row, col).getNinja().playerId) true else false
   }
 
   def changeTurns(): Desk = {
