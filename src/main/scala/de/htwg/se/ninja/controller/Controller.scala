@@ -58,7 +58,44 @@ class Controller(var desk: Desk) extends Observable {
     }
   }
 
-  def deskToString: String = desk.toString(currentPlayer)
+  def deskToString(): String = {
+    val rows: Int= desk.field.matrix.length
+    val lineseparator: String = "  +" + ("----+") * rows + "\n"
+    val line: String = (" |" + "   " )*rows + " |\n"
+    var box: String = "\nrow 0  | 1  | 2  | 3  | 4  | 5" + "\n" + ( lineseparator + "n" +line ) * rows + lineseparator
+
+    for (i <- desk.field.matrix.indices) {
+      box = box.replaceFirst("n", i.toString)
+      for (j <- desk.field.matrix.indices)
+        box = box.replaceFirst("    ", this.toString(currentPlayer, i, j))
+    }
+    box
+  }
+
+
+  def toString(curPlayer: Player, row: Int, col: Int): String ={
+    var str: String = ""
+    val cell: Cell = desk.field.getCellAtPosition(row, col)
+    if(cell.optNinja.isEmpty) {
+      str = "[  ]"
+      str
+    } else {
+      val ninja: Ninja = cell.getNinja()
+      if(ninja.playerId == curPlayer.id) {
+        if (ninja.playerId == desk.player1.id) str = " 1" else str = " 2"
+        ninja.weapon match {
+          case Weapon.flag => str.concat("f ")
+          case Weapon.`rock` => str.concat("r ")
+          case Weapon.paper => str.concat("p ")
+          case Weapon.scissors => str.concat("s ")
+        }
+      } else {
+        str = " xx "
+        str
+      }
+    }
+  }
+
 
   def switchState(newState: State.state): Unit = {
     state = newState
