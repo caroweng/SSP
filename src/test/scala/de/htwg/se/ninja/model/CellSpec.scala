@@ -5,7 +5,7 @@ import org.scalatest.{Matchers, WordSpec}
 class CellSpec extends WordSpec with Matchers{
     "A cell" when {
         val cell: Cell = Cell(None)
-        val ninja: Ninja = Ninja(Weapon.paper, 1)
+        val ninja: Ninja = Ninja(Weapon.paper, 1, 1)
         val cell1: Cell = Cell(Some(ninja))
         val cell5 = Cell
 

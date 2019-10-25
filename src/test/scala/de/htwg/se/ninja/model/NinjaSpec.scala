@@ -6,7 +6,7 @@ class NinjaSpec extends WordSpec with Matchers{
   "A Ninja" when {
     "be constructed" should {
       val player1 = Player("helen", StateOfPlayer.pause, 1)
-      val ninja = Ninja(Weapon.scissors, 1)
+      val ninja = Ninja(Weapon.scissors, 1, 1)
       val ninja5 = Ninja
 
       "be a ninja" in {
