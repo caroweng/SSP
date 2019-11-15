@@ -6,7 +6,7 @@ import de.htwg.se.ninja.util.Observable
 class Controller(var desk: Desk) extends Observable {
   var state: State.state = State.SET_FLAG1
 
-  def wonOrTurn(input: String) = {
+  def wonOrTurn(input: String): String = {
     var dir: Direction.direction = null
     input.split(" ")(3) match {
       case "down" => dir = Direction.down
@@ -19,6 +19,7 @@ class Controller(var desk: Desk) extends Observable {
 
     if (desk.field.cellExists(row, col, dir) && desk.win(row, col, dir)) {
       switchState(State.WON)
+      "You won!"
     } else {
       walk(row, col, dir)
     }
@@ -36,25 +37,27 @@ class Controller(var desk: Desk) extends Observable {
 
   def currentPlayer : Player = if (desk.player1.state == StateOfPlayer.go) desk.player1 else desk.player2
 
-  def setFlag(row: Int, col: Int): Unit = {
+  def setFlag(row: Int, col: Int): String = {
     if (state == State.SET_FLAG1) {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player1, row, col)) {
         desk = desk.copy(field = desk.field.setFlag(desk.player1.id, row, col))
         desk = desk.changeTurns()
         switchState(State.SET_FLAG2)
-        return
+        return "Player1 set flag successfully!"
       }
       switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.SET_FLAG1)
-    } else if (state == State.SET_FLAG2) {
+      "Not valid, try again player1!"
+    } else {
       if (desk.field.isNinjaOfPlayerAtPosition(desk.player2, row, col)) {
         desk = desk.copy(field = desk.field.setFlag(desk.player2.id, row, col))
         desk = desk.changeTurns()
         switchState(State.TURN)
-        return
+        return "Player2 set flag successfully!"
       }
       switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.SET_FLAG2)
+      "Not valid, try again player2!"
     }
   }
 
@@ -95,28 +98,27 @@ class Controller(var desk: Desk) extends Observable {
     }
   }
 
-
   def switchState(newState: State.state): Unit = {
     state = newState
     notifyObservers
   }
 
-  def walk(row: Int, col: Int, d: Direction.direction): Unit = {
+  def walk(row: Int, col: Int, d: Direction.direction): String = {
     val ninja = desk.field.getCellAtPosition(row, col)
     if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != currentPlayer.id) {
       switchState(State.No_NINJA_OR_NOT_VALID)
       switchState(State.TURN)
-      //notifyObservers ????
-      return
+      return "Not valid, try again!"
     }
     if (desk.field.cellExists(row, col, d)) {
       desk = desk.copy(field = desk.field.checkWalk(desk.field.getCellAtPosition(row, col).getNinja(), d))
       desk = desk.changeTurns()
       switchState(State.TURN)
+      "Next player!"
     } else {
       switchState(State.DIRECTION_DOES_NOT_EXIST)
       switchState(State.TURN)
+      "Direction not valid, try again"
     }
-    //notifyObservers
   }
 }
