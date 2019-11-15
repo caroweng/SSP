@@ -6,7 +6,7 @@ import de.htwg.se.ninja.controller.Controller
 
 import scala.io.StdIn.readLine
 
-object Ninjatui {
+object NinjaGame {
 
   var player1 = Player("Spieler1", StateOfPlayer.go, 1)
   var player2 = Player("Spieler2", StateOfPlayer.pause, 2)
