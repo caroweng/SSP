@@ -6,36 +6,31 @@ import de.htwg.se.ninja.util.Observable
 class Controller(var desk: Desk) extends Observable {
     var state: State.state = State.INSERTING_NAME_1
 
-    def wonOrTurn(input: String): State.state = {
-        var dir: Direction.direction = null
-        input.split(" ")(3) match {
-            case "down" => dir = Direction.down
-            case "up" => dir = Direction.up
-            case "left" => dir = Direction.left
-            case "right" => dir = Direction.right
-        }
-        val row: Int = input.split(" ")(1).toInt
-        val col: Int = input.split(" ")(2).toInt
-
-        if (desk.field.cellExists(row, col, dir) && desk.win(row, col, dir)) {
-            switchState(State.WON)
-
-        } else {
-            walk(row, col, dir)
-        }
-    }
-
-    def newDesk(player1: Player, player2: Player, field: Field): Unit = {
+    def newDesk(player1: Player, player2: Player, field: Field): Desk = {
         desk = Desk(field, player2, player1)
         notifyObservers
+        desk
     }
 
-    def newGame(): Unit = {
+    def newGame(): Desk = {
         desk = desk.setNewGame()
         notifyObservers
+        desk
     }
 
-    def currentPlayer : Player = if (desk.player1.state == StateOfPlayer.go) desk.player1 else desk.player2
+    def currentPlayer: Player = if (desk.player1.state == StateOfPlayer.go) desk.player1 else desk.player2
+
+    def setName(name: String): State.state = {
+        if (state == State.INSERTING_NAME_1) {
+            desk = desk.copy(player1 = currentPlayer.setName(name))
+            desk = desk.changeTurns()
+            switchState(State.INSERTING_NAME_2)
+        } else {
+            desk = desk.copy(player2 = currentPlayer.setName(name))
+            desk = desk.changeTurns()
+            switchState(State.SET_FLAG_1)
+        }
+    }
 
     def setFlag(row: Int, col: Int): State.state = {
         if (state == State.SET_FLAG_1) {
@@ -55,22 +50,22 @@ class Controller(var desk: Desk) extends Observable {
         }
     }
 
-    def setName(name: String): State.state = {
-        if (state == State.INSERTING_NAME_1) {
-            desk = desk.copy(player1 = currentPlayer.setName(name))
-            desk = desk.changeTurns()
-            switchState(State.INSERTING_NAME_2)
-        } else {
-            desk = desk.copy(player2 = currentPlayer.setName(name))
-            desk = desk.changeTurns()
-            switchState(State.SET_FLAG_1)
+    def wonOrTurn(input: String): State.state = {
+        var dir: Direction.direction = null
+        input.split(" ")(3) match {
+            case "down" => dir = Direction.down
+            case "up" => dir = Direction.up
+            case "left" => dir = Direction.left
+            case "right" => dir = Direction.right
         }
-    }
+        val row: Int = input.split(" ")(1).toInt
+        val col: Int = input.split(" ")(2).toInt
 
-    def switchState(newState: State.state): State.state = {
-        state = newState
-        notifyObservers
-        state
+        if (desk.field.cellExists(row, col, dir) && desk.win(row, col, dir)) {
+            switchState(State.WON)
+        } else {
+            walk(row, col, dir)
+        }
     }
 
     def walk(row: Int, col: Int, d: Direction.direction): State.state = {
@@ -85,5 +80,11 @@ class Controller(var desk: Desk) extends Observable {
         } else {
             switchState(State.DIRECTION_DOES_NOT_EXIST)
         }
+    }
+
+    def switchState(newState: State.state): State.state = {
+        state = newState
+        notifyObservers
+        state
     }
 }
