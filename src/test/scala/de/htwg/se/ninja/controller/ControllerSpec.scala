@@ -62,5 +62,6 @@ class ControllerSpec extends WordSpec with Matchers{
             controller.walk(1,1, Direction.down) should be(State.TURN)
         }
 
+
     }
 }
