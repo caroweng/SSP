@@ -19,11 +19,6 @@ class ControllerSpec extends WordSpec with Matchers{
             desk should not be (newDesk)
         }
 
-//        "set a new game" in {
-//            controller.newGame()
-//            controller.desk should be()
-//        }
-
 //        "set a players name" in {
 //            controller.switchState(State.INSERTING_NAME_1)
 //            controller.currentPlayer.name should be("helen")
@@ -36,11 +31,21 @@ class ControllerSpec extends WordSpec with Matchers{
 //            controller.currentPlayer.name should be("otherName")
 //        }
 
-//        "set a flag" in {
-//            controller.switchState(State.SET_FLAG_1)
-//            controller.setFlag(1,1)
-//            controller.desk.field.getCellAtPosition(0,0).getNinja().ninjaId should be (1)
-//        }
+        "changeTurns" in {
+            controller.newGame()
+            controller.desk.player1.state should be(StateOfPlayer.pause)
+            controller.desk.player2.state should be(StateOfPlayer.go)
+            controller.desk = controller.desk.changeTurns()
+            controller.desk.player1.state should be(StateOfPlayer.go)
+            controller.desk.player2.state should be(StateOfPlayer.pause)
+        }
+
+        "set a flag" in {
+            controller.newGame()
+            controller.switchState(State.SET_FLAG_1)
+            controller.setFlag(1,1)
+            controller.desk.field.getCellAtPosition(0,0).getNinja().ninjaId should be (1)
+        }
 
         "switch state" in {
             controller.switchState(State.SET_FLAG_2)
@@ -61,7 +66,5 @@ class ControllerSpec extends WordSpec with Matchers{
             controller.newGame()
             controller.walk(1,1, Direction.down) should be(State.TURN)
         }
-
-
     }
 }

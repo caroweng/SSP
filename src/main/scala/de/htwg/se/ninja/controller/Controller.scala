@@ -1,10 +1,11 @@
 package de.htwg.se.ninja.controller
 
 import de.htwg.se.ninja.model._
-import de.htwg.se.ninja.util.Observable
+import de.htwg.se.ninja.util.{Observable, UndoManager}
 
 class Controller(var desk: Desk) extends Observable {
     var state: State.state = State.INSERTING_NAME_1
+    private val undoManager: UndoManager = new UndoManager();
 
     def newDesk(player1: Player, player2: Player, field: Field): Desk = {
         desk = Desk(field, player2, player1)
@@ -69,22 +70,36 @@ class Controller(var desk: Desk) extends Observable {
     }
 
     def walk(row: Int, col: Int, d: Direction.direction): State.state = {
-        val ninja = desk.field.getCellAtPosition(row, col)
-        if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != currentPlayer.id) {
-            return switchState(State.No_NINJA_OR_NOT_VALID)
-        }
-        if (desk.field.cellExists(row, col, d)) {
-            desk = desk.copy(field = desk.field.checkWalk(desk.field.getCellAtPosition(row, col).getNinja(), d))
-            desk = desk.changeTurns()
-            switchState(State.TURN)
-        } else {
-            switchState(State.DIRECTION_DOES_NOT_EXIST)
-        }
+        undoManager.doStep(new WalkCommand(row, col, d, this))
+//        val ninja = desk.field.getCellAtPosition(row, col)
+//        if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != currentPlayer.id) {
+//            return switchState(State.No_NINJA_OR_NOT_VALID)
+//        }
+//        if (desk.field.cellExists(row, col, d)) {
+//            desk = desk.copy(field = desk.field.checkWalk(desk.field.getCellAtPosition(row, col).getNinja(), d))
+//            desk = desk.changeTurns()
+//            switchState(State.TURN)
+//        } else {
+//            switchState(State.DIRECTION_DOES_NOT_EXIST)
+//        }
     }
 
     def switchState(newState: State.state): State.state = {
+        println(state + " " + newState)
         state = newState
         notifyObservers
+        state
+    }
+
+    def undo: State.state = {
+        val state = undoManager.undoStep
+//        notifyObservers
+        state
+    }
+
+    def redo: State.state = {
+        val state = undoManager.redoStep
+//        notifyObservers
         state
     }
 }
