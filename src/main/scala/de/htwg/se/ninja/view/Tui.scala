@@ -1,13 +1,13 @@
 package de.htwg.se.ninja.view
 
-import de.htwg.se.ninja.controller.Controller
+import de.htwg.se.ninja.controller.{Controller, State, UpdateEvent}
 import de.htwg.se.ninja.util.Observer
-import de.htwg.se.ninja.controller.State
 import de.htwg.se.ninja.model.{Cell, Ninja, Player, Weapon}
 
+import scala.swing.Reactor
 import scala.util.matching.Regex
 
-class Tui(controller: Controller) extends Observer {
+class Tui(controller: Controller) extends Reactor {
 
     val NameRegex: Regex = "name [A-Za-z]+".r
     val FlagRegex: Regex = "f \\d \\d".r
@@ -15,7 +15,11 @@ class Tui(controller: Controller) extends Observer {
     val UndoRegex: Regex = "u".r
     val RedoRegex: Regex = "r".r
     val NextPlayerRegex: Regex = "y".r
-    controller.add(this)
+    listenTo(controller)
+
+    reactions += {
+        case e : UpdateEvent => update
+    }
 
     def nameInput(input: String): State.state = {
         input match {
@@ -50,8 +54,7 @@ class Tui(controller: Controller) extends Observer {
         input match {
             case UndoRegex() => controller.undo
             case NextPlayerRegex() => {
-                controller.desk = controller.desk.changeTurns()
-                controller.switchState(State.TURN)
+               controller.changeTurns()
             }
             case _ => controller.switchState(State.WALKED_INPUT_INCORRECT)
         }
@@ -132,7 +135,7 @@ class Tui(controller: Controller) extends Observer {
         println(stateToString())
     }
 
-    override def update: Unit = {
+    def update: Unit = {
         controller.state match {
             case State.INSERTING_NAME_1 =>
             case State.INSERTING_NAME_2 =>
@@ -183,7 +186,7 @@ class Tui(controller: Controller) extends Observer {
                 return
             case State.WON =>
                 printState()
-                System.exit(0)
+//                System.exit(0)
         }
         printState()
     }

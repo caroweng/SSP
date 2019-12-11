@@ -10,6 +10,7 @@ class WalkCommand (row: Int, col: Int, d: Direction.direction, controller: Contr
         if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != controller.currentPlayer.id) {
             return controller.switchState(State.No_NINJA_OR_NOT_VALID)
         }
+
         if (controller.desk.field.cellExists(row, col, d)) {
             controller.desk = controller.desk.copy(field = controller.desk.field.checkWalk(controller.desk.field.getCellAtPosition(row, col).getNinja(), d))
 
@@ -30,6 +31,7 @@ class WalkCommand (row: Int, col: Int, d: Direction.direction, controller: Contr
         if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != controller.currentPlayer.id) {
             return controller.switchState(State.No_NINJA_OR_NOT_VALID)
         }
+
         if (controller.desk.field.cellExists(row, col, d)) {
             controller.desk = controller.desk.copy(field = controller.desk.field.checkWalk(controller.desk.field.getCellAtPosition(row, col).getNinja(), d))
             controller.switchState(State.WALKED)

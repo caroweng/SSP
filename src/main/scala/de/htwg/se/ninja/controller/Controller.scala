@@ -3,19 +3,22 @@ package de.htwg.se.ninja.controller
 import de.htwg.se.ninja.model._
 import de.htwg.se.ninja.util.{Observable, UndoManager}
 
-class Controller(var desk: Desk) extends Observable {
+import scala.swing.Publisher
+import scala.swing.event.Event
+
+class Controller(var desk: Desk) extends Publisher {
     var state: State.state = State.INSERTING_NAME_1
     private val undoManager: UndoManager = new UndoManager();
 
     def newDesk(player1: Player, player2: Player, field: Field): Desk = {
         desk = Desk(field, player2, player1)
-        notifyObservers
+        publish(new UpdateEvent)
         desk
     }
 
     def newGame(): Desk = {
         desk = desk.setNewGame()
-        notifyObservers
+        publish(new UpdateEvent)
         desk
     }
 
@@ -84,22 +87,27 @@ class Controller(var desk: Desk) extends Observable {
 //        }
     }
 
+    def changeTurns(): State.state = {
+        desk = desk.changeTurns()
+        switchState(State.TURN)
+    }
+
     def switchState(newState: State.state): State.state = {
-        println(state + " " + newState)
         state = newState
-        notifyObservers
+        println("switch state")
+        publish(new UpdateEvent)
         state
     }
 
     def undo: State.state = {
         val state = undoManager.undoStep
-//        notifyObservers
         state
     }
 
     def redo: State.state = {
         val state = undoManager.redoStep
-//        notifyObservers
         state
     }
 }
+
+class UpdateEvent extends Event

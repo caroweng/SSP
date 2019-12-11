@@ -2,7 +2,7 @@ package de.htwg.se.ninja
 
 import de.htwg.se.ninja.model._
 import de.htwg.se.ninja.view.{Gui, Tui}
-import de.htwg.se.ninja.controller.Controller
+import de.htwg.se.ninja.controller.{Controller, UpdateEvent}
 
 import scala.io.StdIn.readLine
 
@@ -16,7 +16,7 @@ object NinjaGame {
 
   val tui = new Tui(controller)
   val gui = new Gui(controller)
-  controller.notifyObservers
+  controller.publish(new UpdateEvent)
 
   def main(args: Array[String]): Unit= {
     var input: String = ""
