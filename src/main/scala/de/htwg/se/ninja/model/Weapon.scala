@@ -14,4 +14,8 @@ object Weapon extends Enumeration {
             case 2 => Weapon.paper
         }
     }
+
+    override def toString(): String = {
+        "weapon"
+    }
 }

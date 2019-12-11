@@ -1,7 +1,7 @@
 package de.htwg.se.ninja
 
 import de.htwg.se.ninja.model._
-import de.htwg.se.ninja.view.Tui
+import de.htwg.se.ninja.view.{Gui, Tui}
 import de.htwg.se.ninja.controller.Controller
 
 import scala.io.StdIn.readLine
@@ -15,6 +15,7 @@ object NinjaGame {
   val controller = new Controller(Desk(field, player1, player2).setNewGame())
 
   val tui = new Tui(controller)
+  val gui = new Gui(controller)
   controller.notifyObservers
 
   def main(args: Array[String]): Unit= {
