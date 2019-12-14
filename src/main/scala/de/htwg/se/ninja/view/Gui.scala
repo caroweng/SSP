@@ -1,7 +1,12 @@
 package de.htwg.se.ninja.view
 
+import java.awt.FlowLayout
+import java.io.File
+
 import de.htwg.se.ninja.controller.{Controller, State, UpdateEvent}
-import de.htwg.se.ninja.model.Cell
+import de.htwg.se.ninja.model.{Cell, Weapon}
+import javax.imageio.ImageIO
+import javax.swing.{ImageIcon, JLabel}
 
 import scala.swing.{Action, BorderPanel, Button, Component, Dimension, FlowPanel, Frame, GridPanel, Label, Menu, MenuBar, MenuItem, ScrollPane, TextField}
 import scala.swing.event.{ButtonClicked, MouseClicked}
@@ -125,12 +130,13 @@ class Gui(controller: Controller) extends Frame with UIInterface {
                 outerRow <- 0 until 6
                 outerColumn <- 0 until 6
             } {
-                contents += new GridPanel(2, 4) {
+                contents += new GridPanel(1, 1) {
                     border = LineBorder(java.awt.Color.PINK, 2)
                     val x = outerRow
                     val y = outerColumn
-                    contents += new Label{
-                        text = cellText(x, y)
+                    contents += new Label {
+//                        text = cellText(x, y)
+                        icon = cellIcon(x, y)
                         listenTo(mouse.clicks)
                         reactions += {
                             case e: UpdateEvent => {
@@ -145,7 +151,6 @@ class Gui(controller: Controller) extends Frame with UIInterface {
                 }
             }
         }
-//        contents = gridpanel
         gridpanel
     }
 
@@ -162,22 +167,54 @@ class Gui(controller: Controller) extends Frame with UIInterface {
         contents = new Label("Finished");
     }
 
-    def cellText(row: Int, col: Int): String = {
+    def cellIcon(row: Int, col: Int): ImageIcon = {
+
         val cell = controller.desk.field.getCellAtPosition(row, col)
         if (cell.exists()) {
-            if(cell.getNinja().playerId == controller.currentPlayer.id)
-                cell.getNinja().weapon.toString
-            else
-                "xx"
+            if(cell.getNinja().playerId == controller.currentPlayer.id) {
+                val weapon = cell.getNinja().weapon
+                if( weapon == Weapon.scissors) {
+                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\helenschere.png"); // load the image to a imageIcon
+                    var image = imageIcon.getImage(); // transform it
+                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                    imageIcon = new ImageIcon(newimg);  // transform it back
+                    imageIcon// transform it back
+                } else if( weapon == Weapon.rock) {
+                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\carostein.png"); // load the image to a imageIcon
+                    var image = imageIcon.getImage(); // transform it
+                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                    imageIcon = new ImageIcon(newimg);  // transform it back
+                    imageIcon// transform it back
+                } else if( weapon == Weapon.paper) {
+                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\helenpapier.png"); // load the image to a imageIcon
+                    var image = imageIcon.getImage(); // transform it
+                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                    imageIcon = new ImageIcon(newimg);
+                    imageIcon// transform it back
+                } else {
+                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\caroflag.png"); // load the image to a imageIcon
+                    var image = imageIcon.getImage(); // transform it
+                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                    imageIcon = new ImageIcon(newimg);  // transform it back
+                    imageIcon// transform it back
+                }
+            } else {
+                var imageIcon = new ImageIcon("src\\main\\resources\\img\\ninja.png"); // load the image to a imageIcon
+                var image = imageIcon.getImage(); // transform it
+                var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                imageIcon = new ImageIcon(newimg);  // transform it back
+                imageIcon// transform it back
+            }
         } else {
-            ""
+            null
         }
+//        imageIcon
     }
 
     def statusline() = new FlowPanel {
         if(controller.state == State.INSERTING_NAME_1 || controller.state == State.INSERTING_NAME_2) {
 
-            contents += new Label("Highlight:")
+            contents += new Label("")
             val tf = new TextField("Insert name player" + controller.currentPlayer.id, 10)
             val okButton = new Button {
                 text = "Ok"
@@ -196,10 +233,11 @@ class Gui(controller: Controller) extends Frame with UIInterface {
                 contents += state
             }
         } else {
-            contents += new Label(stateToString())
+            contents += new Label {
+                text = stateToString()
+            }
         }
     }
-//        new Label(stateToString())
 
 
     def enterName() {
@@ -224,8 +262,8 @@ class Gui(controller: Controller) extends Frame with UIInterface {
 
     def stateToString(): String = {
         controller.state match {
-            case State.INSERTING_NAME_1 => "Player 1 insert your name! name <name>"
-            case State.INSERTING_NAME_2 => "Player 2 insert your name! name <name>"
+            case State.INSERTING_NAME_1 => "Player 1 insert your name!"
+            case State.INSERTING_NAME_2 => "Player 2 insert your name!"
             case State.SET_FLAG_1 => controller.currentPlayer.name + " set your flag!"
             case State.SET_FLAG_1_FAILED => "Flag could not be set, try again!"
             case State.SET_FLAG_2 => controller.currentPlayer.name + " set your flag!"
