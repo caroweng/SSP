@@ -1,5 +1,6 @@
 package de.htwg.se.ninja.model
 
+import de.htwg.se.ninja.model.component.component.component.component.{Cell, Ninja, Weapon}
 import org.scalatest.{Matchers, WordSpec}
 
 class CellSpec extends WordSpec with Matchers{

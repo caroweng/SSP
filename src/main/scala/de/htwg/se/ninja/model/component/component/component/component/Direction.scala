@@ -1,4 +1,4 @@
-package de.htwg.se.ninja.model
+package de.htwg.se.ninja.model.component.component.component.component
 
 object Direction extends Enumeration {
   type direction = Value

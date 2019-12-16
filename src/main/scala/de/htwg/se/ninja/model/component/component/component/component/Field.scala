@@ -1,10 +1,12 @@
-package de.htwg.se.ninja.model
+package de.htwg.se.ninja.model.component.component.component.component
+
+import de.htwg.se.ninja.model.component.component.component.{CellInterface, FieldInterface, NinjaInterface, PlayerInterface}
 
 import scala.util.Random
 
-case class Field(matrix: Array[Array[Cell]]) {
+case class Field(matrix: Array[Array[Cell]]) extends FieldInterface {
 
-    def getCellAtPosition(tupel: (Int, Int)): Cell = matrix(tupel._1)(tupel._2)
+    def getCellAtPosition(tupel: (Int, Int)): CellInterface = matrix(tupel._1)(tupel._2)
 
     def setInitial(): Field = {
         val newMatrix: Array[Array[Cell]] = Array.ofDim[Cell](matrix.length, matrix.length)
@@ -34,13 +36,13 @@ case class Field(matrix: Array[Array[Cell]]) {
     }
 
     def setFlag(player: Int, row : Int , col : Int): Field = {
-        val ninja: Ninja = this.matrix(row)(col).getNinja()
+        val ninja: NinjaInterface = this.matrix(row)(col).getNinja()
         copy(matrix.updated(row, matrix(row).updated(col, Cell(Some(Ninja(Weapon.flag, ninja.playerId, ninja.ninjaId))))))
     }
 
     def getAmountOfNinjaRows(): Int = if (this.matrix.length / 3 < 2) 1 else 2
 
-    def getPosition(n1: Ninja): (Int, Int) = {
+    def getPosition(n1: NinjaInterface): (Int, Int) = {
         for(r <- matrix.indices) {
             for(c <- matrix.indices) {
                 if (matrix(r)(c).exists() && (matrix(r)(c).optNinja.getOrElse("kein Ninja") == Ninja(n1.weapon, n1.playerId, n1.ninjaId))) {
@@ -52,14 +54,14 @@ case class Field(matrix: Array[Array[Cell]]) {
         throw new NoSuchElementException()
     }
 
-    def isNinjaOfPlayerAtPosition(player: Player, row: Int, col: Int): Boolean = {
+    def isNinjaOfPlayerAtPosition(player: PlayerInterface, row: Int, col: Int): Boolean = {
         if (inBounds(row, col) && matrix(row)(col).exists() && getCellAtPosition(row, col).getNinja().playerId == player.id) {
             return true
         }
         false
     }
 
-    def checkWalk(n1: Ninja, direction: Direction.direction): Field = {
+    def checkWalk(n1: NinjaInterface, direction: Direction.direction): Field = {
         if(n1.weapon == Weapon.flag) throw new IllegalStateException()
 
         val pos: (Int, Int) = getPosition(n1)
@@ -67,7 +69,7 @@ case class Field(matrix: Array[Array[Cell]]) {
         walkNinja(n1, newpos)
     }
 
-    def walkNinja(ninja: Ninja, newpos: (Int, Int)): Field = {
+    def walkNinja(ninja: NinjaInterface, newpos: (Int, Int)): Field = {
         getCellAtPosition(newpos).optNinja match {
             case None =>  this.-(getPosition(ninja)).+(ninja, newpos)
             case Some(n2) => this.-(getPosition(ninja)).+(fight(ninja, n2), newpos)
@@ -76,19 +78,20 @@ case class Field(matrix: Array[Array[Cell]]) {
 
     def -(pos: (Int,Int)): Field = copy(matrix.updated(pos._1, matrix(pos._1).updated(pos._2, Cell(None))))
 
-    def +(ninja: Ninja, pos: (Int,Int)): Field = copy(matrix.updated(pos._1, matrix(pos._1).updated(pos._2, Cell(Some(ninja)))))
+    def +(ninja: NinjaInterface, pos: (Int,Int)): Field = copy(matrix.updated(pos._1, matrix(pos._1).updated(pos._2, Cell(Some(ninja)))))
 
-    def fight(n1: Ninja, n2: Ninja): Ninja = {
+    def fight(n1: NinjaInterface, n2: NinjaInterface): NinjaInterface = {
         if(n1.weapon == n2.weapon) { //???? wenn Waffen gleich Spieler neue wählen lassen
             val r: Random = new Random()
             val n: Int = r.nextInt(3)
-            val newN: Ninja = n1.copy(weapon = Weapon.createWeapon(n))
+            val newN: NinjaInterface = n1.copyWithNewWeapon(Weapon.createWeapon(n))
+//            val newN: NinjaInterface = n1.copy(weapon = Weapon.createWeapon(n))
             if(weaponWeight(newN.weapon, n2.weapon)) return newN else return n2
         }
         if(weaponWeight(n1.weapon, n2.weapon)) n1 else n2
     }
 
-    def weaponWeight(w1: Weapon.weapon, w2: Weapon.weapon) : Boolean = {
+    def weaponWeight(w1: Weapon.weapon, w2: Weapon.weapon): Boolean = {
         w1 match {
             case Weapon.rock =>
                 if (w2 == Weapon.paper) false else true

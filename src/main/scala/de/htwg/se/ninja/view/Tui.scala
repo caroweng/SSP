@@ -1,8 +1,8 @@
 package de.htwg.se.ninja.view
 
-import de.htwg.se.ninja.controller.{Controller, State, UpdateEvent}
-import de.htwg.se.ninja.util.Observer
-import de.htwg.se.ninja.model.{Cell, Ninja, Player, Weapon}
+import de.htwg.se.ninja.controller.component.{Controller, State, UpdateEvent}
+import de.htwg.se.ninja.model.component.component.component.component.{Cell, Weapon}
+import de.htwg.se.ninja.model.component.component.component.{CellInterface, NinjaInterface, PlayerInterface}
 
 import scala.swing.Reactor
 import scala.util.matching.Regex
@@ -81,19 +81,19 @@ class Tui(controller: Controller) extends Reactor {
         for (i <- controller.desk.field.matrix.indices) {
             box = box.replaceFirst("n", i.toString)
             for (j <- controller.desk.field.matrix.indices)
-                box = box.replaceFirst("    ", this.toString(controller.currentPlayer, i, j))
+                box = box.replaceFirst("    ", this.cellToString(controller.currentPlayer, i, j))
         }
         box
     }
 
-    def toString(curPlayer: Player, row: Int, col: Int): String ={
+    def cellToString(curPlayer: PlayerInterface, row: Int, col: Int): String ={
         var str: String = ""
-        val cell: Cell = controller.desk.field.getCellAtPosition(row, col)
+        val cell: CellInterface = controller.desk.field.getCellAtPosition(row, col)
         if(cell.optNinja.isEmpty) {
             str = "[  ]"
             str
         } else {
-            val ninja: Ninja = cell.getNinja()
+            val ninja: NinjaInterface = cell.getNinja()
             if(ninja.playerId == curPlayer.id) {
                 if (ninja.playerId == controller.currentPlayer.id) str = " 1" else str = " 2"
                 ninja.weapon match {

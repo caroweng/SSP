@@ -1,5 +1,6 @@
 package de.htwg.se.ninja.model
 
+import de.htwg.se.ninja.model.component.component.component.component.Direction
 import org.scalatest.{Matchers, WordSpec}
 
 class DirectionSpec extends WordSpec with Matchers{

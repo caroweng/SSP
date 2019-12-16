@@ -1,5 +1,6 @@
 package de.htwg.se.ninja.model
 
+import de.htwg.se.ninja.model.component.component.component.component.{Ninja, Player, StateOfPlayer, Weapon}
 import org.scalatest.{Matchers, WordSpec}
 
 class NinjaSpec extends WordSpec with Matchers{

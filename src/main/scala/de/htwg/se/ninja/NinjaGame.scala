@@ -1,8 +1,9 @@
 package de.htwg.se.ninja
 
-import de.htwg.se.ninja.model._
+import de.htwg.se.ninja.controller.component.{Controller, UpdateEvent}
+import de.htwg.se.ninja.model.component.Desk
+import de.htwg.se.ninja.model.component.component.component.component.{Cell, Field, Player, StateOfPlayer}
 import de.htwg.se.ninja.view.{Gui, Tui}
-import de.htwg.se.ninja.controller.{Controller, UpdateEvent}
 
 import scala.io.StdIn.readLine
 

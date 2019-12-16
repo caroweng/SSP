@@ -1,7 +1,7 @@
 package de.htwg.se.ninja.model
 
-import java.util.NoSuchElementException
-
+import de.htwg.se.ninja.model.component.component.component.NinjaInterface
+import de.htwg.se.ninja.model.component.component.component.component._
 import org.scalatest.{Matchers, WordSpec}
 
 class FieldSpec extends WordSpec with Matchers {
@@ -34,7 +34,7 @@ class FieldSpec extends WordSpec with Matchers {
 
 
         "have a ninja at position" in {
-            val ninja: Ninja = field.getCellAtPosition(0, 0).optNinja.get
+            val ninja: NinjaInterface = field.getCellAtPosition(0, 0).optNinja.get
             field.getPosition(ninja) should be(0, 0)
         }
 

@@ -1,16 +1,12 @@
 package de.htwg.se.ninja.view
 
-import java.awt.FlowLayout
-import java.io.File
+import de.htwg.se.ninja.controller.component.{Controller, State, UpdateEvent}
+import de.htwg.se.ninja.model.component.component.component.component.Weapon
+import javax.swing.ImageIcon
 
-import de.htwg.se.ninja.controller.{Controller, State, UpdateEvent}
-import de.htwg.se.ninja.model.{Cell, Weapon}
-import javax.imageio.ImageIO
-import javax.swing.{ImageIcon, JLabel}
-
-import scala.swing.{Action, BorderPanel, Button, Component, Dimension, FlowPanel, Frame, GridPanel, Label, Menu, MenuBar, MenuItem, ScrollPane, TextField}
-import scala.swing.event.{ButtonClicked, MouseClicked}
 import scala.swing.Swing.LineBorder
+import scala.swing.event.{ButtonClicked, MouseClicked}
+import scala.swing.{Action, BorderPanel, Button, Component, Dimension, FlowPanel, Frame, GridPanel, Label, Menu, MenuBar, MenuItem, TextField}
 
 
 class Gui(controller: Controller) extends Frame with UIInterface {

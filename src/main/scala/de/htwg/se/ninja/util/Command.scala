@@ -1,6 +1,6 @@
 package de.htwg.se.ninja.util
 
-import de.htwg.se.ninja.controller.State
+import de.htwg.se.ninja.controller.component.State
 
 trait Command {
     def doStep: State.state

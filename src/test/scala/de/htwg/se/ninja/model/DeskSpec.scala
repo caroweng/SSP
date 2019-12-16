@@ -1,5 +1,7 @@
 package de.htwg.se.ninja.model
 
+import de.htwg.se.ninja.model.component.Desk
+import de.htwg.se.ninja.model.component.component.component.component._
 import org.scalatest.{Matchers, WordSpec}
 
 class DeskSpec extends WordSpec with Matchers{
@@ -7,7 +9,7 @@ class DeskSpec extends WordSpec with Matchers{
         val player1: Player = Player("helen", StateOfPlayer.go, 1)
         val player2: Player =  Player("caro", StateOfPlayer.pause, 1)
         val field: Field = Field(Array.ofDim[Cell](6,6))
-        val desk : Desk = Desk(field, player1, player2).setNewGame()
+        val desk : Desk = component.Desk(field, player1, player2).setNewGame()
         val desk5 = Desk
 
         "be a desk" in {

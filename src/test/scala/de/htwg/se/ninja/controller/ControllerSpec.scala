@@ -1,6 +1,8 @@
 package de.htwg.se.ninja.controller
 
-import de.htwg.se.ninja.model.{Cell, Direction, Desk, Field, Player, StateOfPlayer, Weapon}
+import de.htwg.se.ninja.controller.component.{Controller, State}
+import de.htwg.se.ninja.model.component.Desk
+import de.htwg.se.ninja.model.component.component.component.component._
 import org.scalatest.{Matchers, WordSpec}
 
 class ControllerSpec extends WordSpec with Matchers{

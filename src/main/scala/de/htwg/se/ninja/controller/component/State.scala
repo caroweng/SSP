@@ -1,4 +1,4 @@
-package de.htwg.se.ninja.controller
+package de.htwg.se.ninja.controller.component
 
 object State extends Enumeration {
 
