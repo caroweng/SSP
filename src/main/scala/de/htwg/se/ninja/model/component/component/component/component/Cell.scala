@@ -5,5 +5,5 @@ import de.htwg.se.ninja.model.component.component.component.{CellInterface, Ninj
 case class Cell(optNinja: Option[NinjaInterface]) extends CellInterface{
   def exists(): Boolean = optNinja.isDefined
   def getNinja(): NinjaInterface = optNinja.get
-  def removeNinja(): Cell = Cell(None)
+  def removeNinja(): CellInterface = Cell(None)
 }

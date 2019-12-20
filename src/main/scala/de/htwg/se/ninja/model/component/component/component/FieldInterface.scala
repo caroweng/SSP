@@ -1,6 +1,7 @@
 package de.htwg.se.ninja.model.component.component.component
 
-import de.htwg.se.ninja.model.component.component.component.component.{Cell, Direction, Field, Weapon}
+import de.htwg.se.ninja.model.component.component.component.component.{Cell, Direction, Weapon}
+
 
 trait FieldInterface {
     val matrix: Array[Array[Cell]]

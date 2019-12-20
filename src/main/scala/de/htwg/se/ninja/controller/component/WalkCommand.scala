@@ -1,11 +1,12 @@
 package de.htwg.se.ninja.controller.component
 
+import de.htwg.se.ninja.model.DeskInterface
 import de.htwg.se.ninja.model.component.Desk
 import de.htwg.se.ninja.model.component.component.component.component.{Direction, Weapon}
 import de.htwg.se.ninja.util.Command
 
 class WalkCommand (row: Int, col: Int, d: Direction.direction, controller: Controller) extends Command {
-    val oldDesk: Desk = controller.desk.copyDesk()
+    val oldDesk: DeskInterface = controller.desk.copyDesk()
     override def doStep: State.state = {
         val ninja = controller.desk.field.getCellAtPosition(row, col)
         if (!ninja.exists()|| ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != controller.currentPlayer.id) {

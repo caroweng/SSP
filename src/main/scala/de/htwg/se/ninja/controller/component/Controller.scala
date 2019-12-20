@@ -1,8 +1,8 @@
 package de.htwg.se.ninja.controller.component
 
 import de.htwg.se.ninja.controller.ControllerInterface
-import de.htwg.se.ninja.model.component.component.component.PlayerInterface
-import de.htwg.se.ninja.model.component.component.component.component.{Direction, Field, Player, StateOfPlayer}
+import de.htwg.se.ninja.model.component.component.component.{FieldInterface, PlayerInterface}
+import de.htwg.se.ninja.model.component.component.component.component.{Direction, StateOfPlayer}
 import de.htwg.se.ninja.model.{component, _}
 import de.htwg.se.ninja.util.UndoManager
 
@@ -12,7 +12,7 @@ class Controller(var desk: DeskInterface) extends ControllerInterface {
     var state: State.state = State.INSERTING_NAME_1
     private val undoManager: UndoManager = new UndoManager();
 
-    def newDesk(player1: Player, player2: Player, field: Field): DeskInterface = {
+    def newDesk(player1: PlayerInterface, player2: PlayerInterface, field: FieldInterface): DeskInterface = {
         desk = component.Desk(field, player2, player1)
         publish(new UpdateEvent)
         desk

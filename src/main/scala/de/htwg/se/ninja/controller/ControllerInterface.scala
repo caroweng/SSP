@@ -2,15 +2,15 @@ package de.htwg.se.ninja.controller
 
 import de.htwg.se.ninja.controller.component.State
 import de.htwg.se.ninja.model.DeskInterface
-import de.htwg.se.ninja.model.component.component.component.PlayerInterface
-import de.htwg.se.ninja.model.component.component.component.component.{Direction, Field, Player}
+import de.htwg.se.ninja.model.component.component.component.{FieldInterface, PlayerInterface}
+import de.htwg.se.ninja.model.component.component.component.component.{Direction}
 
 import scala.swing.Publisher
 
 trait ControllerInterface extends Publisher {
     var desk: DeskInterface
 
-    def newDesk(player1: Player, player2: Player, field: Field): DeskInterface
+    def newDesk(player1: PlayerInterface, player2: PlayerInterface, field: FieldInterface): DeskInterface
     def newGame(): DeskInterface
     def currentPlayer: PlayerInterface
     def setName(name: String): State.state
