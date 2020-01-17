@@ -9,6 +9,7 @@ import scala.swing.Publisher
 
 trait ControllerInterface extends Publisher {
     var desk: DeskInterface
+    var state: State.state
 
     def newDesk(player1: PlayerInterface, player2: PlayerInterface, field: FieldInterface): DeskInterface
     def newGame(): DeskInterface
@@ -18,6 +19,8 @@ trait ControllerInterface extends Publisher {
     def wonOrTurn(input: String): State.state
     def walk(row: Int, col: Int, d: Direction.direction): State.state
     def changeTurns(): State.state
+    def loadFile: State.state
+    def storeFile: State.state
     def switchState(newState: State.state): State.state
     def undo: State.state
     def redo: State.state

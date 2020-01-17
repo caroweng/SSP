@@ -1,5 +1,6 @@
 package de.htwg.se.ninja.view
 
+import de.htwg.se.ninja.controller.ControllerInterface
 import de.htwg.se.ninja.controller.component.{Controller, State, UpdateEvent}
 import de.htwg.se.ninja.model.component.component.component.component.Weapon
 import javax.swing.ImageIcon
@@ -9,7 +10,7 @@ import scala.swing.event.{ButtonClicked, MouseClicked}
 import scala.swing.{Action, BorderPanel, Button, Component, Dimension, FlowPanel, Frame, GridPanel, Label, Menu, MenuBar, MenuItem, TextField}
 
 
-class Gui(controller: Controller) extends Frame with UIInterface {
+class Gui(controller: ControllerInterface) extends Frame with UIInterface {
     listenTo(controller)
 
     size = new Dimension(100, 100)
@@ -94,6 +95,17 @@ class Gui(controller: Controller) extends Frame with UIInterface {
                 case ButtonClicked(_) => {
                     if(controller.state == State.TURN) {
                         controller.redo
+                        repaint
+                    }
+                }
+            }
+        }
+        contents += new Button {
+            text = "store game"
+            reactions += {
+                case ButtonClicked(_) => {
+                    if(controller.state == State.TURN) {
+                        controller.storeFile
                         repaint
                     }
                 }
@@ -221,11 +233,22 @@ class Gui(controller: Controller) extends Frame with UIInterface {
                     }
                 }
             }
+
+            val loadGameButton = new Button {
+                text = "Load Game"
+                reactions += {
+                    case ButtonClicked(_) => {
+                        controller.loadFile
+                    }
+                }
+            }
+
             val state = new Label(stateToString())
 
-            contents += new GridPanel(3, 1) {
+            contents += new GridPanel(4, 1) {
                 contents += tf
                 contents += okButton
+                contents += loadGameButton
                 contents += state
             }
         } else {
@@ -233,27 +256,6 @@ class Gui(controller: Controller) extends Frame with UIInterface {
                 text = stateToString()
             }
         }
-    }
-
-
-    def enterName() {
-        val tf = new TextField("Insert name player" + controller.currentPlayer.id , 10)
-        val okButton = new Button {
-            text = "Ok"
-            reactions += {
-                case ButtonClicked(_) => {
-                    println(tf.text)
-                    controller.setName(tf.text)
-                }
-            }
-        }
-        val state = new Label(stateToString())
-
-        contents = new GridPanel(3, 1) {
-                    contents += tf
-                    contents += okButton
-                    contents += state
-                }
     }
 
     def stateToString(): String = {
@@ -275,6 +277,9 @@ class Gui(controller: Controller) extends Frame with UIInterface {
             case State.TURN => controller.currentPlayer.name + " it's your turn!>"
             case State.WALKED => controller.currentPlayer.name + " press <next Player> for next player or <undo> for undo."
             case State.WON => controller.currentPlayer.name + " you win!"
+            case State.STORE_FILE => "Game stored."
+            case State.LOAD_FILE => "Game loaded."
+            case State.COULD_NOT_LOAD_FILE => "Could not load file."
         }
     }
 
@@ -323,6 +328,9 @@ class Gui(controller: Controller) extends Frame with UIInterface {
                 return
             case State.TURN => getPanel()
             case State.WALKED => getPanel()
+            case State.STORE_FILE => getPanel()
+            case State.LOAD_FILE => getPanel()
+            case State.COULD_NOT_LOAD_FILE => getPanel()
             case State.No_NINJA_OR_NOT_VALID =>
                 controller.switchState(State.TURN)
                 return

@@ -1,5 +1,6 @@
 package de.htwg.se.ninja.view
 
+import de.htwg.se.ninja.controller.ControllerInterface
 import de.htwg.se.ninja.controller.component.{Controller, State, UpdateEvent}
 import de.htwg.se.ninja.model.component.component.component.component.{Cell, Weapon}
 import de.htwg.se.ninja.model.component.component.component.{CellInterface, NinjaInterface, PlayerInterface}
@@ -7,13 +8,15 @@ import de.htwg.se.ninja.model.component.component.component.{CellInterface, Ninj
 import scala.swing.Reactor
 import scala.util.matching.Regex
 
-class Tui(controller: Controller) extends Reactor {
+class Tui(controller: ControllerInterface) extends Reactor with UIInterface {
 
     val NameRegex: Regex = "name [A-Za-z]+".r
     val FlagRegex: Regex = "f \\d \\d".r
     val WalkRegex: Regex = "w \\d \\d up|w \\d \\d down|w \\d \\d right|w \\d \\d left".r
     val UndoRegex: Regex = "u".r
     val RedoRegex: Regex = "r".r
+    val StoreGameRegex: Regex = "s".r
+    val LoadGameRegex: Regex = "l".r
     val NextPlayerRegex: Regex = "y".r
     listenTo(controller)
 
@@ -23,6 +26,7 @@ class Tui(controller: Controller) extends Reactor {
 
     def nameInput(input: String): State.state = {
         input match {
+            case LoadGameRegex() => controller.loadFile
             case NameRegex() => controller.setName(input.replace("name ", ""))
             case _ => if(controller.currentPlayer.id == 1)
                 controller.switchState(State.NAME_REGEX_INCORRECT_1)
@@ -46,6 +50,7 @@ class Tui(controller: Controller) extends Reactor {
         input match {
             case WalkRegex() => controller.wonOrTurn(input)
             case RedoRegex() => controller.redo
+            case StoreGameRegex() => controller.storeFile
             case _ => controller.switchState(State.WALK_REGEX_INCORRECT)
         }
     }
@@ -128,6 +133,9 @@ class Tui(controller: Controller) extends Reactor {
             case State.TURN => controller.currentPlayer.name + " it's your turn! w <row> <col> <up|down|left|right>" + deskToString
             case State.WALKED => controller.currentPlayer.name + " press <y> for next player or <u> for undo."+ deskToString
             case State.WON => controller.currentPlayer.name + " you win!"
+            case State.STORE_FILE => "Game stored."
+            case State.LOAD_FILE => "Game loaded."
+            case State.COULD_NOT_LOAD_FILE => "File could not be loaded."
         }
     }
 
@@ -184,6 +192,9 @@ class Tui(controller: Controller) extends Reactor {
                 printState()
                 controller.switchState(State.TURN)
                 return
+            case State.STORE_FILE =>
+            case State.LOAD_FILE =>
+            case State.COULD_NOT_LOAD_FILE =>
             case State.WON =>
                 printState()
 //                System.exit(0)
