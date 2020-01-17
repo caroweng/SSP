@@ -1,19 +1,30 @@
 package de.htwg.se.ninja.controller.component
 
+import java.nio.file.{Files, Paths}
+
+import com.google.inject.{Guice, Inject}
+import de.htwg.se.ninja.NinjaModule
 import de.htwg.se.ninja.controller.ControllerInterface
+import de.htwg.se.ninja.model.component.Desk
 import de.htwg.se.ninja.model.component.component.component.{FieldInterface, PlayerInterface}
 import de.htwg.se.ninja.model.component.component.component.component.{Direction, StateOfPlayer}
+import de.htwg.se.ninja.model.fileIO.FileIOInterface
+import de.htwg.se.ninja.model.fileIO.json.FileIO
 import de.htwg.se.ninja.model.{component, _}
 import de.htwg.se.ninja.util.UndoManager
+import play.api.libs.json.JsObject
 
+import scala.swing.Publisher
 import scala.swing.event.Event
 
-class Controller(var desk: DeskInterface) extends ControllerInterface {
+class Controller @Inject()(var desk: DeskInterface) extends ControllerInterface with Publisher {
     var state: State.state = State.INSERTING_NAME_1
     private val undoManager: UndoManager = new UndoManager();
+    private val fileIO = new FileIO()
+
 
     def newDesk(player1: PlayerInterface, player2: PlayerInterface, field: FieldInterface): DeskInterface = {
-        desk = component.Desk(field, player2, player1)
+        desk = Desk(field, player2, player1)
         publish(new UpdateEvent)
         desk
     }
@@ -81,6 +92,29 @@ class Controller(var desk: DeskInterface) extends ControllerInterface {
     def changeTurns(): State.state = {
         desk = desk.changeTurns()
         switchState(State.TURN)
+    }
+
+    override def storeFile: State.state = {
+        fileIO.save(desk, state)
+        val oldState = state
+        switchState(State.STORE_FILE)
+        switchState(oldState)
+    }
+
+    override def loadFile: State.state = {
+        if (Files.exists(Paths.get("target/desk.json"))) {
+            desk = fileIO.load
+            switchState(State.LOAD_FILE)
+//            switchState(START)
+            switchState(State.TURN)
+        } else {
+            switchState(State.COULD_NOT_LOAD_FILE)
+//            createDesk(12)
+        }
+    }
+
+    def deskToJson(): JsObject = {
+        fileIO.deskToJson(desk, state)
     }
 
     def switchState(newState: State.state): State.state = {

@@ -1,11 +1,12 @@
 package de.htwg.se.ninja.model.component
 
+import com.google.inject.Inject
 import de.htwg.se.ninja.model._
 import de.htwg.se.ninja.model.component.component.component.component.Direction.direction
 import de.htwg.se.ninja.model.component.component.component.component.{Direction, StateOfPlayer, Weapon}
 import de.htwg.se.ninja.model.component.component.component.{FieldInterface, NinjaInterface, PlayerInterface}
 
-case class Desk(field: FieldInterface, player1: PlayerInterface, player2: PlayerInterface) extends DeskInterface {
+case class Desk @Inject()(field: FieldInterface, player1: PlayerInterface, player2: PlayerInterface) extends DeskInterface {
 
   def setNewGame(): Desk = this.copy(field = field.setInitial())
 

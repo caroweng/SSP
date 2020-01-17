@@ -20,5 +20,8 @@ object State extends Enumeration {
   DIRECTION_DOES_NOT_EXIST,
   TURN,
   WALKED,
+  STORE_FILE,
+  LOAD_FILE,
+  COULD_NOT_LOAD_FILE,
   WON = Value
 }
