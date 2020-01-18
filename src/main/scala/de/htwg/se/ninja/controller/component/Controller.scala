@@ -9,7 +9,7 @@ import de.htwg.se.ninja.model.component.Desk
 import de.htwg.se.ninja.model.component.component.component.{FieldInterface, PlayerInterface}
 import de.htwg.se.ninja.model.component.component.component.component.{Direction, StateOfPlayer}
 import de.htwg.se.ninja.model.fileIO.FileIOInterface
-import de.htwg.se.ninja.model.fileIO.json.FileIO
+import de.htwg.se.ninja.model.fileIO.xml.FileIO
 import de.htwg.se.ninja.model.{component, _}
 import de.htwg.se.ninja.util.UndoManager
 import play.api.libs.json.JsObject
@@ -102,20 +102,20 @@ class Controller @Inject()(var desk: DeskInterface) extends ControllerInterface 
     }
 
     override def loadFile: State.state = {
-        if (Files.exists(Paths.get("target/desk.json"))) {
+//        if (Files.exists(Paths.get("target/desk.xml"))) { // TODO: darf nicht mit .xml oder .json sein
             desk = fileIO.load
             switchState(State.LOAD_FILE)
 //            switchState(START)
             switchState(State.TURN)
-        } else {
-            switchState(State.COULD_NOT_LOAD_FILE)
+//        } else {
+//            switchState(State.COULD_NOT_LOAD_FILE)
 //            createDesk(12)
-        }
+//        }
     }
 
-    def deskToJson(): JsObject = {
-        fileIO.deskToJson(desk, state)
-    }
+//    def deskToJson(): JsObject = {
+//        fileIO.deskToJson(desk, state)
+//    }
 
     def switchState(newState: State.state): State.state = {
         state = newState

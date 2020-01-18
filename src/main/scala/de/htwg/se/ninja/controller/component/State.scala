@@ -24,4 +24,6 @@ object State extends Enumeration {
   LOAD_FILE,
   COULD_NOT_LOAD_FILE,
   WON = Value
+
+  
 }

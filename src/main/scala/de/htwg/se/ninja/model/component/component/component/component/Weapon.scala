@@ -15,6 +15,15 @@ object Weapon extends Enumeration {
         }
     }
 
+    def stringToWeapon(string: String): Weapon.weapon = {
+        string match {
+            case "s" => Weapon.scissors
+            case "p" => Weapon.paper
+            case "r" => Weapon.rock
+            case "f" => Weapon.flag
+        }
+    }
+
     override def toString(): String = {
         "weapon"
     }

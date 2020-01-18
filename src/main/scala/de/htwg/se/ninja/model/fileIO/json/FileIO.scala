@@ -19,13 +19,13 @@ class FileIO @Inject() extends FileIOInterface {
 
         val name_1 = ((json \ "desk" \ "player1") \ "name").as[String]
         val state_1_string = ((json \ "desk" \ "player1") \ "state").as[String]
-        val state_1 = stringToStateOfPlayer(state_1_string)
+        val state_1 = StateOfPlayer.stringToStateOfPlayer(state_1_string)
         val id_1 = ((json \ "desk" \ "player1") \ "id").as[Int]
         val player1: PlayerInterface = Player(name_1, state_1, id_1)
 
         val name_2 = ((json \ "desk" \ "player2") \ "name").as[String]
         val state_2_string: String = ((json \ "desk" \ "player2") \ "state").as[String]
-        val state_2 = stringToStateOfPlayer(state_2_string)
+        val state_2 = StateOfPlayer.stringToStateOfPlayer(state_2_string)
         val id_2 = ((json \ "desk" \ "player2") \ "id").as[Int]
         val player2: PlayerInterface = Player(name_2, state_2, id_2)
 
@@ -47,7 +47,7 @@ class FileIO @Inject() extends FileIOInterface {
             println(ninja_i.get)
             if((ninja_i \ "weapon").isDefined) {
                 val weapon_string = (ninja_i \ "weapon").as[String]
-                val weapon = stringToWeapon(weapon_string)
+                val weapon = Weapon.stringToWeapon(weapon_string)
                 val ninjaId = (ninja_i \ "ninjaId").as[Int]
                 val playerId = (ninja_i \ "playerId").as[Int]
                 val ninja: NinjaInterface = Ninja(weapon, playerId, ninjaId)
@@ -59,28 +59,10 @@ class FileIO @Inject() extends FileIOInterface {
         desk
     }
 
-    def stringToStateOfPlayer(string: String): StateOfPlayer.stateOfPlayer = {
-        if(string == "go")
-            StateOfPlayer.go
-        else
-            StateOfPlayer.pause
-    }
-
-    def stringToWeapon(string: String): Weapon.weapon = {
-        if(string == "f")
-            Weapon.flag
-        else if (string == "p")
-            Weapon.paper
-        else if (string == "s")
-            Weapon.scissors
-        else
-            Weapon.rock
-    }
-
     override def save(grid: DeskInterface, state: State.Value): Unit = {
         import java.io._
         val pw = new PrintWriter(new File("target/desk.json"))
-        pw.write(Json.prettyPrint(deskToJson(grid, state)))
+        pw.write(Json.prettyPrint(deskToString(grid, state)))
         pw.close()
     }
 
@@ -114,7 +96,7 @@ class FileIO @Inject() extends FileIOInterface {
         )
     }
 
-    def deskToJson(desk: DeskInterface, state: State.Value) = {
+    def deskToString(desk: DeskInterface, state: State.Value) = {
         Json.obj(
             "desk" -> Json.obj(
                 "player1" -> Json.toJson(desk.player1),

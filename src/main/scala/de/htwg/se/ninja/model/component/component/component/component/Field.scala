@@ -1,10 +1,11 @@
 package de.htwg.se.ninja.model.component.component.component.component
 
+import com.google.inject.Inject
 import de.htwg.se.ninja.model.component.component.component.{CellInterface, FieldInterface, NinjaInterface, PlayerInterface}
 
 import scala.util.Random
 
-case class Field(matrix: Array[Array[Cell]]) extends FieldInterface {
+case class Field (matrix: Array[Array[Cell]]) extends FieldInterface {
 
     def getCellAtPosition(tupel: (Int, Int)): CellInterface = matrix(tupel._1)(tupel._2)
 

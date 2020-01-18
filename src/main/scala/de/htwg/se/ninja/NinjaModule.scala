@@ -7,6 +7,7 @@ import de.htwg.se.ninja.model.DeskInterface
 import de.htwg.se.ninja.model.component.Desk
 import de.htwg.se.ninja.model.component.component.component.{CellInterface, FieldInterface, NinjaInterface, PlayerInterface}
 import de.htwg.se.ninja.model.component.component.component.component.{Cell, Field, Ninja, Player, StateOfPlayer}
+import de.htwg.se.ninja.model.fileIO.FileIOInterface
 import net.codingwell.scalaguice.ScalaModule
 
 class NinjaModule extends AbstractModule with ScalaModule {
@@ -19,6 +20,10 @@ class NinjaModule extends AbstractModule with ScalaModule {
         bind[FieldInterface].toInstance(field)
         bind[DeskInterface].toInstance(Desk(field, player1, player2))
         bind[ControllerInterface].toInstance(new Controller(desk))
+
+        bind[FileIOInterface].to[model.fileIO.json.FileIO]
+//        bind[FileIOInterface].to[model.fileIO.xml.FileIO]
+
     }
 
 }

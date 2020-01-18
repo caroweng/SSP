@@ -6,6 +6,6 @@ import play.api.libs.json.JsObject
 
 trait FileIOInterface {
   def load: DeskInterface
-  def save(desk: DeskInterface, state: State.Value): Unit
-  def deskToJson(desk: DeskInterface, state: State.Value): JsObject
+  def save(desk: DeskInterface, state: State.state): Unit
+//  def deskToString(desk: DeskInterface, state: State.state): JsObject
 }
