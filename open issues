@@ -13,3 +13,5 @@ Exception in thread "AWT-EventQueue-0" java.util.NoSuchElementException: None.ge
 	at de.htwg.se.ninja.controller.component.Controller.wonOrTurn(Controller.scala:81)
 	at de.htwg.se.ninja.view.Gui.move(Gui.scala:122)
 	at de.htwg.se.ninja.view.Gui$$anon$6$$anon$11$$anonfun$5.applyOrElse(Gui.scala:66)
+
+
