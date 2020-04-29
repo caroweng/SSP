@@ -15,7 +15,6 @@ class FileIO @Inject() extends FileIOInterface {
 
     override def load: DeskInterface = {
         val json: JsValue = Json.parse(Source.fromFile("target/desk.json").getLines.mkString)
-        var desk: DeskInterface = null
 
         val name_1 = ((json \ "desk" \ "player1") \ "name").as[String]
         val state_1_string = ((json \ "desk" \ "player1") \ "state").as[String]
@@ -55,8 +54,7 @@ class FileIO @Inject() extends FileIOInterface {
             }
         }
 
-        desk = Desk(field, player1, player2)
-        desk
+        Desk(field, player1, player2)
     }
 
     override def save(grid: DeskInterface, state: State.Value): Unit = {

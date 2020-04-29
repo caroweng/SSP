@@ -1,9 +1,10 @@
 package de.htwg.se.ninja.model.component.component.component.component
 
 import com.google.inject.Inject
+import com.sun.net.httpserver.Authenticator.Success
 import de.htwg.se.ninja.model.component.component.component.{CellInterface, FieldInterface, NinjaInterface, PlayerInterface}
 
-import scala.util.Random
+import scala.util.{Failure, Random, Success, Try}
 
 case class Field (matrix: Array[Array[Cell]]) extends FieldInterface {
 
@@ -16,21 +17,18 @@ case class Field (matrix: Array[Array[Cell]]) extends FieldInterface {
             newMatrix(i)(j) = Cell(None)
         }
 
-        var id: Int = 1
         for {row <- 0 until this.getAmountOfNinjaRows()
              col <- this.matrix.indices} {
             val r: Random = new Random()
             val n: Int = r.nextInt(3)
-            newMatrix(row)(col) = Cell(Some(Ninja(Weapon.createWeapon(n), 1, id)))
-            id += 1
+            newMatrix(row)(col) = Cell(Some(Ninja(Weapon.createWeapon(n), 1, (row+2*col))))
         }
-        id = 1
+
         for {row <- this.matrix.length - this.getAmountOfNinjaRows() until this.matrix.length
              col <- this.matrix.indices} {
             val r: Random = new Random()
             val n: Int = r.nextInt(3)
-            newMatrix(row)(col) = Cell(Some(Ninja(Weapon.createWeapon(n), 2, id)))
-            id += 1
+            newMatrix(row)(col) = Cell(Some(Ninja(Weapon.createWeapon(n), 2, (row+2*col))))
         }
 
         this.copy(matrix = newMatrix)
@@ -43,15 +41,15 @@ case class Field (matrix: Array[Array[Cell]]) extends FieldInterface {
 
     def getAmountOfNinjaRows(): Int = if (this.matrix.length / 3 < 2) 1 else 2
 
+
+//  TODO  return Try(int,int)
     def getPosition(n1: NinjaInterface): (Int, Int) = {
-        for(r <- matrix.indices) {
-            for(c <- matrix.indices) {
+        for{r <- matrix.indices
+            c <- matrix.indices} {
                 if (matrix(r)(c).exists() && (matrix(r)(c).optNinja.getOrElse("kein Ninja") == Ninja(n1.weapon, n1.playerId, n1.ninjaId))) {
                     return (r, c)
                 }
-            }
         }
-
         throw new NoSuchElementException()
     }
 
@@ -62,15 +60,10 @@ case class Field (matrix: Array[Array[Cell]]) extends FieldInterface {
         false
     }
 
-    def checkWalk(n1: NinjaInterface, direction: Direction.direction): Field = {
-        if(n1.weapon == Weapon.flag) throw new IllegalStateException()
-
-        val pos: (Int, Int) = getPosition(n1)
+    def walkNinja(ninja: NinjaInterface, direction: Direction.direction): Field = {
+        val pos: (Int, Int) = getPosition(ninja)
         val newpos: (Int, Int) = addDirection(pos, Direction.getDirectionIndex(direction))
-        walkNinja(n1, newpos)
-    }
 
-    def walkNinja(ninja: NinjaInterface, newpos: (Int, Int)): Field = {
         getCellAtPosition(newpos).optNinja match {
             case None =>  this.-(getPosition(ninja)).+(ninja, newpos)
             case Some(n2) => this.-(getPosition(ninja)).+(fight(ninja, n2), newpos)
@@ -86,7 +79,6 @@ case class Field (matrix: Array[Array[Cell]]) extends FieldInterface {
             val r: Random = new Random()
             val n: Int = r.nextInt(3)
             val newN: NinjaInterface = n1.copyWithNewWeapon(Weapon.createWeapon(n))
-//            val newN: NinjaInterface = n1.copy(weapon = Weapon.createWeapon(n))
             if(weaponWeight(newN.weapon, n2.weapon)) return newN else return n2
         }
         if(weaponWeight(n1.weapon, n2.weapon)) n1 else n2

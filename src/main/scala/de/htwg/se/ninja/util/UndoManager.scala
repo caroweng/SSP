@@ -10,26 +10,26 @@ class UndoManager {
     command.doStep
   }
 
-  def undoStep: State.state  = {
+  def undoStep: Option[State.state]  = {
     undoStack match {
-      case  Nil => null
+      case Nil => None
       case head::stack => {
         val state = head.undoStep
         undoStack=stack
         redoStack= head::redoStack
-        state
+        Some(state)
       }
     }
   }
 
-  def redoStep: State.state = {
+  def redoStep: Option[State.state] = {
     redoStack match {
-      case Nil => null
+      case Nil => None
       case head::stack => {
         val state = head.redoStep
         redoStack=stack
         undoStack=head::undoStack
-        state
+        Some(state)
       }
     }
   }

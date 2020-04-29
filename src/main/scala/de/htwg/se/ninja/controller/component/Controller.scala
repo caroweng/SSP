@@ -68,13 +68,7 @@ class Controller @Inject()(var desk: DeskInterface) extends ControllerInterface 
     }
 
     def wonOrTurn(input: String): State.state = {
-        var dir: Direction.direction = null
-        input.split(" ")(3) match {
-            case "down" => dir = Direction.down
-            case "up" => dir = Direction.up
-            case "left" => dir = Direction.left
-            case "right" => dir = Direction.right
-        }
+        val dir: Direction.direction = getDirection(input)
         val row: Int = input.split(" ")(1).toInt
         val col: Int = input.split(" ")(2).toInt
 
@@ -82,6 +76,15 @@ class Controller @Inject()(var desk: DeskInterface) extends ControllerInterface 
             switchState(State.WON)
         } else {
             walk(row, col, dir)
+        }
+    }
+
+    def getDirection(input: String): Direction.direction = {
+        input.split(" ")(3) match {
+            case "down" => Direction.down
+            case "up" => Direction.up
+            case "left" => Direction.left
+            case "right" => Direction.right
         }
     }
 
@@ -102,20 +105,10 @@ class Controller @Inject()(var desk: DeskInterface) extends ControllerInterface 
     }
 
     override def loadFile: State.state = {
-//        if (Files.exists(Paths.get("target/desk.xml"))) { // TODO: darf nicht mit .xml oder .json sein
-            desk = fileIO.load
-            switchState(State.LOAD_FILE)
-//            switchState(START)
-            switchState(State.TURN)
-//        } else {
-//            switchState(State.COULD_NOT_LOAD_FILE)
-//            createDesk(12)
-//        }
+        desk = fileIO.load
+        switchState(State.LOAD_FILE)
+        switchState(State.TURN)
     }
-
-//    def deskToJson(): JsObject = {
-//        fileIO.deskToJson(desk, state)
-//    }
 
     def switchState(newState: State.state): State.state = {
         state = newState
@@ -125,13 +118,19 @@ class Controller @Inject()(var desk: DeskInterface) extends ControllerInterface 
     }
 
     def undo: State.state = {
-        val state = undoManager.undoStep
-        state
+        val newState = undoManager.undoStep
+        if(newState.isDefined)
+            newState.get
+        else
+            state
     }
 
     def redo: State.state = {
-        val state = undoManager.redoStep
-        state
+        val newState = undoManager.redoStep
+        if(newState.isDefined)
+            newState.get
+        else
+            state
     }
 }
 

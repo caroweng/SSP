@@ -15,7 +15,7 @@ class Gui(controller: ControllerInterface) extends Frame with UIInterface {
 
     size = new Dimension(100, 100)
     title = "Ninja"
-    var selectedCellCoordinates: (Int, Int) = null
+    var selectedCellCoordinates: (Int, Int) = (-1, -1)
 
     reactions += {
         case e: UpdateEvent => {
@@ -114,7 +114,7 @@ class Gui(controller: ControllerInterface) extends Frame with UIInterface {
     }
 
     def move(direction: String): Unit = {
-        if(selectedCellCoordinates == null) {
+        if(selectedCellCoordinates == (-1, -1)) {
             return
         }
         val x = selectedCellCoordinates._1
@@ -176,7 +176,6 @@ class Gui(controller: ControllerInterface) extends Frame with UIInterface {
     }
 
     def cellIcon(row: Int, col: Int): ImageIcon = {
-
         val cell = controller.desk.field.getCellAtPosition(row, col)
         if (cell.exists()) {
             if(cell.getNinja().playerId == controller.currentPlayer.id) {
@@ -210,13 +209,11 @@ class Gui(controller: ControllerInterface) extends Frame with UIInterface {
                 var imageIcon = new ImageIcon("src\\main\\resources\\img\\ninja.png"); // load the image to a imageIcon
                 var image = imageIcon.getImage(); // transform it
                 var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                imageIcon = new ImageIcon(newimg);  // transform it back
-                imageIcon// transform it back
+                new ImageIcon(newimg);
             }
         } else {
-            null
+            new ImageIcon("")
         }
-//        imageIcon
     }
 
     def statusline() = new FlowPanel {
