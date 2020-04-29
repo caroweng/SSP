@@ -46,7 +46,7 @@ class ControllerSpec extends WordSpec with Matchers{
             controller.newGame()
             controller.switchState(State.SET_FLAG_1)
             controller.setFlag(1,1)
-            controller.desk.field.getCellAtPosition(0,0).getNinja().ninjaId should be (1)
+            controller.desk.field.getCellAtPosition(0,0).getNinja().ninjaId should be (0)
         }
 
         "switch state" in {
@@ -66,7 +66,7 @@ class ControllerSpec extends WordSpec with Matchers{
 
         "walk a ninja" in {
             controller.newGame()
-            controller.walk(1,1, Direction.down) should be(State.TURN)
+            controller.walk(1,1, Direction.down) should be(State.WALKED)
         }
     }
 }
