@@ -6,6 +6,7 @@ import de.htwg.se.ninja.model.component.component.component.component.{Cell, Wea
 import de.htwg.se.ninja.model.component.component.component.{CellInterface, NinjaInterface, PlayerInterface}
 
 import scala.swing.Reactor
+import scala.util.{Failure, Success}
 import scala.util.matching.Regex
 
 class Tui(controller: ControllerInterface) extends Reactor with UIInterface {
@@ -94,24 +95,23 @@ class Tui(controller: ControllerInterface) extends Reactor with UIInterface {
     def cellToString(curPlayer: PlayerInterface, row: Int, col: Int): String ={
         var str: String = ""
         val cell: CellInterface = controller.desk.field.getCellAtPosition(row, col)
-        if(cell.optNinja.isEmpty) {
-            str = "[  ]"
-            str
-        } else {
-            val ninja: NinjaInterface = cell.getNinja()
-            if(ninja.playerId == curPlayer.id) {
-                if (ninja.playerId == controller.currentPlayer.id) str = " 1" else str = " 2"
-                ninja.weapon match {
-                    case Weapon.flag => str.concat("f ")
-                    case Weapon.rock => str.concat("r ")
-                    case Weapon.paper => str.concat("p ")
-                    case Weapon.scissors => str.concat("s ")
-                }
-            } else {
-                str = " xx "
-                str
+
+            val tryNinja = cell.getNinja()
+            tryNinja match {
+                case Success(ninja) =>
+                    if(ninja.playerId == curPlayer.id) {
+                        if (ninja.playerId == controller.currentPlayer.id) str = " 1" else str = " 2"
+                        ninja.weapon match {
+                            case Weapon.flag => str.concat("f ")
+                            case Weapon.rock => str.concat("r ")
+                            case Weapon.paper => str.concat("p ")
+                            case Weapon.scissors => str.concat("s ")
+                        }
+                    } else {
+                         " xx "
+                    }
+                case Failure(e) => "[  ]"
             }
-        }
     }
 
     def stateToString(): String = {

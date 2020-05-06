@@ -2,6 +2,8 @@ package de.htwg.se.ninja.model.component.component.component
 
 import de.htwg.se.ninja.model.component.component.component.component.{Cell, Direction, Weapon}
 
+import scala.util.Try
+
 
 trait FieldInterface {
     val matrix: Array[Array[Cell]]
@@ -17,7 +19,7 @@ trait FieldInterface {
     def +(ninja: NinjaInterface, pos: (Int,Int)): FieldInterface
     def fight(n1: NinjaInterface, n2: NinjaInterface): NinjaInterface
     def weaponWeight(w1: Weapon.weapon, w2: Weapon.weapon): Boolean
-    def cellExists(row: Int, col: Int, direction: Direction.direction): Boolean
+    def walkAtCellPossible(row: Int, col: Int, direction: Direction.direction): Boolean
     def addDirection(base: (Int, Int), amount: (Int, Int)): (Int, Int)
     def inBounds(tuple: (Int, Int)): Boolean
 }

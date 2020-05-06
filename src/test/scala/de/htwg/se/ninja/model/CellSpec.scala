@@ -3,6 +3,8 @@ package de.htwg.se.ninja.model
 import de.htwg.se.ninja.model.component.component.component.component.{Cell, Ninja, Weapon}
 import org.scalatest.{Matchers, WordSpec}
 
+import scala.util.{Failure, Success}
+
 class CellSpec extends WordSpec with Matchers{
     "A cell" when {
         val cell: Cell = Cell(None)
@@ -25,7 +27,10 @@ class CellSpec extends WordSpec with Matchers{
 
         "have an Ninja" in {
             cell1.exists() should be (true)
-            cell1.getNinja() should be (ninja)
+            cell1.getNinja() match {
+                case Success(n) => n should be (ninja)
+                case Failure(e) =>
+            }
         }
 
         "not have an Ninja" in {

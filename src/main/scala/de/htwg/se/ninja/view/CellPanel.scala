@@ -1,9 +1,8 @@
 package de.htwg.se.ninja.view
 
-
 import de.htwg.se.ninja.controller.component.Controller
-
 import scala.swing._
+import scala.util.{Failure, Success}
 
 class CellPanel(row: Int, column: Int, controller: Controller) extends FlowPanel {
 
@@ -15,10 +14,10 @@ class CellPanel(row: Int, column: Int, controller: Controller) extends FlowPanel
 
     def cellText(row: Int, col: Int): String = {
         val cell = controller.desk.field.getCellAtPosition(row, column)
-        if (cell.exists()) {
-            cell.getNinja().weapon.toString
-        } else {
-            "ninja"
+        val tryNinja = cell.getNinja()
+        tryNinja match {
+            case Success(ninja) => ninja.weapon.toString
+            case Failure(e) => "ninja"
         }
     }
 

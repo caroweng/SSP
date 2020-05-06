@@ -1,11 +1,13 @@
 package de.htwg.se.ninja.model.component.component.component
 
+import scala.util.Try
+
 
 trait CellInterface {
     val optNinja: Option[NinjaInterface]
 
     def exists(): Boolean
-    def getNinja(): NinjaInterface
+    def getNinja(): Try[NinjaInterface]
     def removeNinja(): CellInterface
 
 }

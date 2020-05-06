@@ -8,6 +8,7 @@ import javax.swing.ImageIcon
 import scala.swing.Swing.LineBorder
 import scala.swing.event.{ButtonClicked, MouseClicked}
 import scala.swing.{Action, BorderPanel, Button, Component, Dimension, FlowPanel, Frame, GridPanel, Label, Menu, MenuBar, MenuItem, TextField}
+import scala.util.{Failure, Success}
 
 
 class Gui(controller: ControllerInterface) extends Frame with UIInterface {
@@ -22,12 +23,6 @@ class Gui(controller: ControllerInterface) extends Frame with UIInterface {
             update
         }
     }
-//
-//    contents = new BorderPanel {
-//        add(gridPanel(), BorderPanel.Position.Center)
-////        add(statusline, BorderPanel.Position.South)
-//    }
-
 
     menuBar = new MenuBar {
         contents += new Menu("Menu") {
@@ -114,7 +109,7 @@ class Gui(controller: ControllerInterface) extends Frame with UIInterface {
     }
 
     def move(direction: String): Unit = {
-        if(selectedCellCoordinates == (-1, -1)) {
+        if(selectedCellCoordinates == (-1, -1) || controller.state == State.WALKED) {
             return
         }
         val x = selectedCellCoordinates._1
@@ -177,42 +172,32 @@ class Gui(controller: ControllerInterface) extends Frame with UIInterface {
 
     def cellIcon(row: Int, col: Int): ImageIcon = {
         val cell = controller.desk.field.getCellAtPosition(row, col)
-        if (cell.exists()) {
-            if(cell.getNinja().playerId == controller.currentPlayer.id) {
-                val weapon = cell.getNinja().weapon
-                if( weapon == Weapon.scissors) {
-                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\helenschere.png"); // load the image to a imageIcon
-                    var image = imageIcon.getImage(); // transform it
-                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                    imageIcon = new ImageIcon(newimg);  // transform it back
-                    imageIcon// transform it back
-                } else if( weapon == Weapon.rock) {
-                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\carostein.png"); // load the image to a imageIcon
-                    var image = imageIcon.getImage(); // transform it
-                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                    imageIcon = new ImageIcon(newimg);  // transform it back
-                    imageIcon// transform it back
-                } else if( weapon == Weapon.paper) {
-                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\helenpapier.png"); // load the image to a imageIcon
-                    var image = imageIcon.getImage(); // transform it
-                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                    imageIcon = new ImageIcon(newimg);
-                    imageIcon// transform it back
+        val tryNinja = cell.getNinja()
+        tryNinja match {
+            case Success(ninja) => {
+                if(ninja.playerId == controller.currentPlayer.id) {
+                    val weapon = ninja.weapon
+                    var imageIcon = new ImageIcon()
+                    if( weapon == Weapon.scissors) {
+                        imageIcon = new ImageIcon("src\\main\\resources\\img\\helenschere.png");
+                    } else if( weapon == Weapon.rock) {
+                        imageIcon = new ImageIcon("src\\main\\resources\\img\\carostein.png");
+                    } else if( weapon == Weapon.paper) {
+                        imageIcon = new ImageIcon("src\\main\\resources\\img\\helenpapier.png");
+                    } else {
+                        imageIcon = new ImageIcon("src\\main\\resources\\img\\caroflag.png");
+                    }
+                    val image = imageIcon.getImage
+                    val newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+                    new ImageIcon(newimg);
                 } else {
-                    var imageIcon = new ImageIcon("src\\main\\resources\\img\\caroflag.png"); // load the image to a imageIcon
-                    var image = imageIcon.getImage(); // transform it
-                    var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                    imageIcon = new ImageIcon(newimg);  // transform it back
-                    imageIcon// transform it back
+                    val imageIcon = new ImageIcon("src\\main\\resources\\img\\ninja.png");
+                    val image = imageIcon.getImage
+                    val newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+                    new ImageIcon(newimg);
                 }
-            } else {
-                var imageIcon = new ImageIcon("src\\main\\resources\\img\\ninja.png"); // load the image to a imageIcon
-                var image = imageIcon.getImage(); // transform it
-                var newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                new ImageIcon(newimg);
             }
-        } else {
-            new ImageIcon("")
+            case Failure(e) => new ImageIcon("")
         }
     }
 

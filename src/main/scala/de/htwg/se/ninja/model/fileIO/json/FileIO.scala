@@ -10,6 +10,7 @@ import de.htwg.se.ninja.model.fileIO.FileIOInterface
 import play.api.libs.json._
 
 import scala.io.Source
+import scala.util.{Failure, Success}
 
 class FileIO @Inject() extends FileIOInterface {
 
@@ -30,10 +31,15 @@ class FileIO @Inject() extends FileIOInterface {
 
         var field: FieldInterface = Field(Array.ofDim[Cell](6,6))
 
-        for {i <- field.matrix.indices
-             j <- field.matrix.indices} {
-            field.matrix(i)(j) = Cell(None)
-        }
+        field.matrix.indices flatMap(i =>
+            field.matrix.indices map (j =>
+                field.matrix(i)(j) = Cell(None)
+                ))
+
+//        for {i <- field.matrix.indices
+//             j <- field.matrix.indices} {
+//            field.matrix(i)(j) = Cell(None)
+//        }
 
 
         for (index <- 0 until 6 * 6) {
@@ -74,15 +80,24 @@ class FileIO @Inject() extends FileIOInterface {
 
     implicit val cellWrites = new Writes[CellInterface] {
         def writes(cell: CellInterface): JsObject = {
-
-            if(cell.exists()) {
-                val ninja: NinjaInterface = cell.getNinja()
-                Json.obj(
-                    "ninja" -> Json.toJson(ninja)
+            val ninja = cell.getNinja()
+            ninja match {
+                case Success(value) =>
+                     Json.obj(
+                    "ninja" -> Json.toJson(value)
                 )
-            } else {
+                case Failure(value) =>
                 Json.obj("ninja" -> "")
             }
+
+//            if(cell.exists()) {
+//                val ninja: NinjaInterface = cell.getNinja()
+//                Json.obj(
+//                    "ninja" -> Json.toJson(ninja)
+//                )
+//            } else {
+//                Json.obj("ninja" -> "")
+//            }
         }
     }
 

@@ -5,6 +5,8 @@ import de.htwg.se.ninja.model.component.Desk
 import de.htwg.se.ninja.model.component.component.component.component._
 import org.scalatest.{Matchers, WordSpec}
 
+import scala.util.{Failure, Success}
+
 class ControllerSpec extends WordSpec with Matchers{
     "A controller" when {
         val player1: Player = Player("helen", StateOfPlayer.go, 1)
@@ -46,7 +48,11 @@ class ControllerSpec extends WordSpec with Matchers{
             controller.newGame()
             controller.switchState(State.SET_FLAG_1)
             controller.setFlag(1,1)
-            controller.desk.field.getCellAtPosition(0,0).getNinja().ninjaId should be (0)
+            val tryNinja = controller.desk.field.getCellAtPosition(0,0).getNinja()
+            tryNinja match {
+                case Success(ninja) => ninja.ninjaId should be (0)
+                case Failure(e) =>
+            }
         }
 
         "switch state" in {

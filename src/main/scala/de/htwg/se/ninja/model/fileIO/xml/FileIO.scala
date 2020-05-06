@@ -8,6 +8,7 @@ import de.htwg.se.ninja.model.component.component.component.component.{Cell, Fie
 import de.htwg.se.ninja.model.component.component.component.{CellInterface, FieldInterface, NinjaInterface, PlayerInterface}
 import de.htwg.se.ninja.model.fileIO.FileIOInterface
 
+import scala.util.{Failure, Success}
 import scala.xml.PrettyPrinter
 
 class FileIO @Inject() extends FileIOInterface {
@@ -86,8 +87,12 @@ class FileIO @Inject() extends FileIOInterface {
 
     def cellToXml(cell: CellInterface, row: Int, col: Int) = {
         <cell row={ row.toString } col={ col.toString } >
-            { if(cell.exists())
-                ninjaToXml(cell.getNinja())
+            {
+                val tryNinja = cell.getNinja()
+                tryNinja match {
+                    case Success(ninja) => ninjaToXml(ninja)
+                    case Failure(e) =>
+                }
             }
         </cell>
     }

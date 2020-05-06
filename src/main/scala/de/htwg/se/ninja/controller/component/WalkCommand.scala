@@ -5,21 +5,26 @@ import de.htwg.se.ninja.model.component.Desk
 import de.htwg.se.ninja.model.component.component.component.component.{Direction, Weapon}
 import de.htwg.se.ninja.util.Command
 
+import scala.util.{Failure, Success}
+
 class WalkCommand (row: Int, col: Int, d: Direction.direction, controller: Controller) extends Command {
     val oldDesk: DeskInterface = controller.desk.copyDesk()
     override def doStep: State.state = {
-        val ninja = controller.desk.field.getCellAtPosition(row, col)
-        if (!ninja.exists() || ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != controller.currentPlayer.id) {
-            return controller.switchState(State.No_NINJA_OR_NOT_VALID)
-        }
-
-        if (controller.desk.field.cellExists(row, col, d)) {
-            controller.desk = controller.desk.copyWithNewField(controller.desk.field.walkNinja(controller.desk.field.getCellAtPosition(row, col).getNinja(), d))
-
-            println("Finished? Press <y> for next player")
-            controller.switchState(State.WALKED)
-        } else {
-            controller.switchState(State.DIRECTION_DOES_NOT_EXIST)
+        val cell = controller.desk.field.getCellAtPosition(row, col)
+        val ninja = cell.getNinja()
+        ninja match {
+            case Success(n) =>
+                if(n.weapon == Weapon.flag || n.playerId != controller.currentPlayer.id)
+                    return controller.switchState(State.No_NINJA_OR_NOT_VALID)
+                if (controller.desk.field.walkAtCellPossible(row, col, d)) {
+                    controller.desk = controller.desk.copyWithNewField(controller.desk.field.walkNinja(n, d))
+                    println("Finished? Press <y> for next player")
+                    controller.switchState(State.WALKED)
+                } else {
+                    controller.switchState(State.DIRECTION_DOES_NOT_EXIST)
+                }
+            case Failure(e) =>
+                controller.switchState(State.No_NINJA_OR_NOT_VALID)
         }
     }
 
@@ -29,18 +34,23 @@ class WalkCommand (row: Int, col: Int, d: Direction.direction, controller: Contr
     }
 
     override def redoStep: State.state = {
-        val ninja = controller.desk.field.getCellAtPosition(row, col)
-        if (!ninja.exists() || ninja.getNinja().weapon == Weapon.flag || ninja.getNinja().playerId != controller.currentPlayer.id) {
-            return controller.switchState(State.No_NINJA_OR_NOT_VALID)
-        }
-
-        if (controller.desk.field.cellExists(row, col, d)) {
-            controller.desk = controller.desk.copyWithNewField(controller.desk.field.walkNinja(controller.desk.field.getCellAtPosition(row, col).getNinja(), d))
-            controller.switchState(State.WALKED)
-        } else {
-            controller.switchState(State.DIRECTION_DOES_NOT_EXIST)
-        }
+        doStep
+//        val cell = controller.desk.field.getCellAtPosition(row, col)
+//        val ninja = cell.getNinja()
+//        ninja match {
+//            case Success(n) =>
+//                if(n.weapon == Weapon.flag || n.playerId != controller.currentPlayer.id)
+//                    return controller.switchState(State.No_NINJA_OR_NOT_VALID)
+//
+//                if (controller.desk.field.cellExists(row, col, d)) {
+//                    controller.desk = controller.desk.copyWithNewField(controller.desk.field.walkNinja(n, d))
+//                    println("Finished? Press <y> for next player")
+//                    controller.switchState(State.WALKED)
+//                } else {
+//                    controller.switchState(State.DIRECTION_DOES_NOT_EXIST)
+//                }
+//            case Failure(e) =>
+//                controller.switchState(State.No_NINJA_OR_NOT_VALID)
+//        }
     }
-
-
 }

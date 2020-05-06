@@ -72,7 +72,7 @@ class Controller @Inject()(var desk: DeskInterface) extends ControllerInterface 
         val row: Int = input.split(" ")(1).toInt
         val col: Int = input.split(" ")(2).toInt
 
-        if (desk.field.cellExists(row, col, dir) && desk.win(row, col, dir)) {
+        if (desk.field.walkAtCellPossible(row, col, dir) && desk.win(row, col, dir)) {
             switchState(State.WON)
         } else {
             walk(row, col, dir)

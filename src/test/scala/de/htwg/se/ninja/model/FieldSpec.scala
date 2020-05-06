@@ -4,6 +4,8 @@ import de.htwg.se.ninja.model.component.component.component.NinjaInterface
 import de.htwg.se.ninja.model.component.component.component.component._
 import org.scalatest.{Matchers, WordSpec}
 
+import scala.util.{Failure, Success}
+
 class FieldSpec extends WordSpec with Matchers {
     "A field" when {
         var matrix = Array.ofDim[Cell](3, 3)
@@ -18,8 +20,16 @@ class FieldSpec extends WordSpec with Matchers {
 
         "be set with ninjas" in {
             val field2 = field.setInitial()
-            field2.getCellAtPosition(0,0).getNinja().playerId should be(1)
-            field2.getCellAtPosition(2,2).getNinja().playerId should be(2)
+
+            field2.getCellAtPosition(0,0).getNinja() match {
+                case Success(n1) => n1.playerId should be(1)
+                case Failure(e) =>
+            }
+
+            field2.getCellAtPosition(2,2).getNinja() match {
+                case Success(n2) => n2.playerId should be(2)
+                case Failure(e) =>
+            }
         }
 
         "be set empty with initial ninja rows" in {
