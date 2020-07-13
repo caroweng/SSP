@@ -1,17 +1,1 @@
-
-        //            bind[NinjaInterface].to[Ninja]
-        //            bind[PlayerInterface].to[Player]
-        //            bind[CellInterface].to[Cell]]
-
-
-in gui: ein spieler 2 mal laufen ->
-Exception in thread "AWT-EventQueue-0" java.util.NoSuchElementException: None.get
-	at scala.None$.get(Option.scala:349)
-	at scala.None$.get(Option.scala:347)
-	at de.htwg.se.ninja.model.component.component.component.component.Cell.getNinja(Cell.scala:8)
-	at de.htwg.se.ninja.model.component.component.component.component.Field.cellExists(Field.scala:108)
-	at de.htwg.se.ninja.controller.component.Controller.wonOrTurn(Controller.scala:81)
-	at de.htwg.se.ninja.view.Gui.move(Gui.scala:122)
-	at de.htwg.se.ninja.view.Gui$$anon$6$$anon$11$$anonfun$5.applyOrElse(Gui.scala:66)
-
-
+- name leer abfangen
